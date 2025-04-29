@@ -2,7 +2,7 @@ local on_attach = require("plugins.configs.lspconfig").on_attach
 local capabilities = require("plugins.configs.lspconfig").capabilities
 local os_check = require 'core.os_check'
 
-local lspconfig = require "lspconfig"
+local lspconfig = require "plugins.lspconfig"
 
 -- if you just want default config for the servers then put them in a table
 local servers = { "html", "cssls" }
@@ -52,5 +52,3 @@ if os_check.is_fedora() then
 else
   lspconfig.solargraph.setup{}
 end
--- lspconfig.steep.setup{}
--- require('custom.configs.jdtls')

@@ -102,6 +102,18 @@ M.tabufline = {
       end,
       "Close buffer",
     },
+    ["<Tab>"] = {
+      function()
+        require("nvchad.tabufline").tabuflineNext()
+      end,
+      "Next buffer",
+    },
+    ["<S-Tab>"] = {
+      function()
+        require("nvchad.tabufline").tabuflinePrev()
+      end,
+      "Previous buffer",
+    }
   },
 }
 

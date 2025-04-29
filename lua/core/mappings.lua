@@ -105,6 +105,18 @@ M.tabufline = {
   },
 }
 
+M.nvimtree = {
+  plugin = true,
+
+  n = { }
+}
+
+M.comment = {
+  plugin = true,
+
+  n = { }
+}
+
 M.lspconfig = {
   plugin = true,
 

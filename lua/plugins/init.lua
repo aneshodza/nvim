@@ -216,21 +216,6 @@ local plugins = {
   },
 
   {
-    "williamboman/mason.nvim",
-    opts = overrides.mason,
-  },
-
-  {
-    "nvim-treesitter/nvim-treesitter",
-    opts = overrides.treesitter,
-  },
-
-  {
-    "nvim-tree/nvim-tree.lua",
-    opts = overrides.nvimtree,
-  },
-
-  {
     "max397574/better-escape.nvim",
     event = "InsertEnter",
     config = function()
@@ -363,7 +348,9 @@ if not os_check.is_fedora() then
   table.insert(plugins, {
     "zbirenbaum/copilot.lua",
     event = "InsertEnter",
-    opts = overrides.copilot,
+    opts = function()
+      return require("plugins.configs.copilot")
+    end
   })
 
   table.insert(plugins, {
@@ -376,8 +363,12 @@ if not os_check.is_fedora() then
         end,
       },
     },
-    opts = overrides.cmp,
+    opts = function()
+      return require "plugins.configs.copilot"
+    end,
   })
+else
+  vim.notify("fedora", vim.log.levels.INFO, { title = "Plugin Loaded" })
 end
 
 local config = require("core.utils").load_config()

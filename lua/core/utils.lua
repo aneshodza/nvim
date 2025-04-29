@@ -77,6 +77,10 @@ M.load_mappings = function(section, mapping_opt)
     local mappings = require("core.utils").load_config().mappings
 
     if type(section) == "string" then
+      if not mappings[section] then
+        vim.notify("load_mappings: M." .. section .. " not found in core/mappings.lua", vim.log.levels.ERROR)
+        return
+      end
       mappings[section]["plugin"] = nil
       mappings = { mappings[section] }
     end

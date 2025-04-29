@@ -147,7 +147,8 @@ local plugins = {
       },
     },
     config = function()
-      require "plugins.configs.lspconfig"
+      require "plugins.configs.lsp_servers"
+      return require "plugins.configs.lspconfig"
     end, -- Override to setup mason-lspconfig
   },
 

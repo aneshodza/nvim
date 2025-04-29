@@ -1,4 +1,3 @@
-local overrides = require "custom.configs.overrides"
 local os_check = require "core.os_check"
 
 local plugins = {

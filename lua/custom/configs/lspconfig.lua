@@ -1,6 +1,6 @@
 local on_attach = require("plugins.configs.lspconfig").on_attach
 local capabilities = require("plugins.configs.lspconfig").capabilities
-local os_check = require'custom.os_check'
+local os_check = require 'core.os_check'
 
 local lspconfig = require "lspconfig"
 

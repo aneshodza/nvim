@@ -7,8 +7,8 @@ M.options = {
 M.ui = {
   ------------------------------- base46 -------------------------------------
   -- hl = highlights
-  hl_add = {},
   hl_override = {},
+  hl_add = {},
   changed_themes = {},
   theme_toggle = { "onedark", "one_light" },
   theme = "onedark", -- default theme
@@ -48,7 +48,7 @@ M.ui = {
 
   -- nvdash (dashboard)
   nvdash = {
-    load_on_startup = false,
+    load_on_startup = true,
 
     header = {
       "           ▄ ▄                   ",

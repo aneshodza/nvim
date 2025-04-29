@@ -1,6 +1,7 @@
--- All plugins have lazy=true by default,to load a plugin on startup just lazy=false
--- List of all default plugins & their definitions
-local default_plugins = {
+local overrides = require "custom.configs.overrides"
+local os_check = require "core.os_check"
+
+local plugins = {
 
   "nvim-lua/plenary.nvim",
 
@@ -137,12 +138,19 @@ local default_plugins = {
 
   {
     "neovim/nvim-lspconfig",
-    init = function()
-      require("core.utils").lazy_load "nvim-lspconfig"
-    end,
+    dependencies = {
+      {
+        "nvimtools/none-ls.nvim",
+        name = "null-ls.nvim",
+        config = function()
+          require "custom.configs.null-ls"
+        end,
+      },
+    },
     config = function()
       require "plugins.configs.lspconfig"
-    end,
+      require "custom.configs.lspconfig"
+    end, -- Override to setup mason-lspconfig
   },
 
   -- load luasnips + cmp related in insert mode only
@@ -190,6 +198,95 @@ local default_plugins = {
     end,
     config = function(_, opts)
       require("cmp").setup(opts)
+    end,
+  },
+
+  {
+    "simrat39/rust-tools.nvim",
+    requires = {
+      "nvim-lua/popup.nvim",
+      "nvim-lua/plenary.nvim",
+      "nvim-telescope/telescope.nvim",
+      "mfussenegger/nvim-dap",
+    },
+    ft = { "rust" },
+    config = function()
+      require("rust-tools").setup {}
+    end,
+    lazy = false,
+  },
+
+  {
+    "williamboman/mason.nvim",
+    opts = overrides.mason,
+  },
+
+  {
+    "nvim-treesitter/nvim-treesitter",
+    opts = overrides.treesitter,
+  },
+
+  {
+    "nvim-tree/nvim-tree.lua",
+    opts = overrides.nvimtree,
+  },
+
+  {
+    "max397574/better-escape.nvim",
+    event = "InsertEnter",
+    config = function()
+      require("better_escape").setup()
+    end,
+  },
+
+  {
+    "lervag/vimtex",
+    ft = { "tex" },
+  },
+
+  {
+    "akinsho/flutter-tools.nvim",
+    lazy = false,
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+      "stevearc/dressing.nvim", -- optional for vim.ui.select
+    },
+    config = true,
+  },
+
+  {
+    "nvim-pack/nvim-spectre",
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+    },
+  },
+
+  {
+    "tpope/vim-eunuch",
+    lazy = false,
+  },
+
+  {
+    "kylechui/nvim-surround",
+    version = "*",
+    event = "VeryLazy",
+    init = function()
+      require("core.utils").load_mappings "surround"
+    end,
+    config = function()
+      require("nvim-surround").setup {}
+    end,
+  },
+
+  {
+    "iamcco/markdown-preview.nvim",
+    cmd = { "MarkdownPreviewToggle", "MarkdownPreview", "MarkdownPreviewStop" },
+    ft = { "markdown" },
+    init = function()
+      require("core.utils").load_mappings "markdown_preview"
+    end,
+    build = function()
+      vim.fn["mkdp#util#install"]()
     end,
   },
 
@@ -263,10 +360,31 @@ local default_plugins = {
   },
 }
 
+if not os_check.is_fedora() then
+  table.insert(plugins, {
+    "zbirenbaum/copilot.lua",
+    event = "InsertEnter",
+    opts = overrides.copilot,
+  })
+
+  table.insert(plugins, {
+    "hrsh7th/nvim-cmp",
+    dependencies = {
+      {
+        "zbirenbaum/copilot-cmp",
+        config = function()
+          require("copilot_cmp").setup()
+        end,
+      },
+    },
+    opts = overrides.cmp,
+  })
+end
+
 local config = require("core.utils").load_config()
 
 if #config.plugins > 0 then
-  table.insert(default_plugins, { import = config.plugins })
+  table.insert(plugins, { import = config.plugins })
 end
 
-require("lazy").setup(default_plugins, config.lazy_nvim)
+require("lazy").setup(plugins, config.lazy_nvim)

@@ -4,10 +4,6 @@ local M = {}
 
 M.general = {
   i = {
-    -- go to  beginning and end
-    ["<C-b>"] = { "<ESC>^i", "Beginning of line" },
-    ["<C-e>"] = { "<End>", "End of line" },
-
     -- navigate within insert mode
     ["<C-h>"] = { "<Left>", "Move left" },
     ["<C-l>"] = { "<Right>", "Move right" },
@@ -16,7 +12,30 @@ M.general = {
   },
 
   n = {
+    -- Find and replace in buffer
+    ["<leader>rp"] = {
+      ":lua local search = vim.fn.input('Search for: '); local replace = vim.fn.input('Replace with: '); vim.fn.feedkeys(':%s#' .. search .. '#' .. replace .. '#gi')<CR>",
+      "Replace word"
+    },
+
+    -- resize
+    ['<leader>rhm'] = { "<cmd>horizontal resize +10<CR>", "Resize horizontal +10" },
+    ['<leader>rhl'] = { "<cmd>horizontal resize -10<CR>", "Resize horizontal -10" },
+    ['<leader>rhs'] = { "<cmd>horizontal resize 15<CR>", "Resize horizontal to be small (15)" },
+    ['<leader>rhc'] = { "<cmd>horizontal resize ", "Resize horizontal custom" },
+
+    ['<leader>rvm'] = { "<cmd>vertical resize +10<CR>", "Resize vertical +10" },
+    ['<leader>rvl'] = { "<cmd>vertical resize -10<CR>", "Resize vertical -10" },
+    ['<leader>rvs'] = { "<cmd>vertical resize 15<CR>", "Resize vertical to be small (15)" },
+    ['<leader>rvc'] = { "<cmd>vertical resize ", "Resize vertical custom" },
+
+    -- split
+    ["<leader>sh"] = { "<cmd>split<CR>", "Split horizontal" },
+    ["<leader>sv"] = { "<cmd>vsplit<CR>", "Split vertical" },
+
+    -- Clear highlights
     ["<Esc>"] = { ":noh <CR>", "Clear highlights" },
+
     -- switch between windows
     ["<C-h>"] = { "<C-w>h", "Window left" },
     ["<C-l>"] = { "<C-w>l", "Window right" },
@@ -76,21 +95,6 @@ M.tabufline = {
   plugin = true,
 
   n = {
-    -- cycle through buffers
-    ["<tab>"] = {
-      function()
-        require("nvchad.tabufline").tabuflineNext()
-      end,
-      "Goto next buffer",
-    },
-
-    ["<S-tab>"] = {
-      function()
-        require("nvchad.tabufline").tabuflinePrev()
-      end,
-      "Goto prev buffer",
-    },
-
     -- close buffer + hide terminal buffer
     ["<leader>x"] = {
       function()
@@ -101,31 +105,8 @@ M.tabufline = {
   },
 }
 
-M.comment = {
-  plugin = true,
-
-  -- toggle comment in both modes
-  n = {
-    ["<leader>/"] = {
-      function()
-        require("Comment.api").toggle.linewise.current()
-      end,
-      "Toggle comment",
-    },
-  },
-
-  v = {
-    ["<leader>/"] = {
-      "<ESC><cmd>lua require('Comment.api').toggle.linewise(vim.fn.visualmode())<CR>",
-      "Toggle comment",
-    },
-  },
-}
-
 M.lspconfig = {
   plugin = true,
-
-  -- See `<cmd> :help vim.lsp.*` for documentation on any of the below functions
 
   n = {
     ["gD"] = {
@@ -170,87 +151,40 @@ M.lspconfig = {
       "LSP definition type",
     },
 
-    ["<leader>ra"] = {
-      function()
-        require("nvchad.renamer").open()
-      end,
-      "LSP rename",
-    },
-
-    ["<leader>ca"] = {
-      function()
-        vim.lsp.buf.code_action()
-      end,
-      "LSP code action",
-    },
-
-    ["gr"] = {
-      function()
-        vim.lsp.buf.references()
-      end,
-      "LSP references",
-    },
-
-    ["<leader>f"] = {
+    ["<leader>df"] = {
       function()
         vim.diagnostic.open_float { border = "rounded" }
       end,
       "Floating diagnostic",
     },
 
-    ["[d"] = {
+    ["<leader>dp"] = {
       function()
         vim.diagnostic.goto_prev { float = { border = "rounded" } }
       end,
-      "Goto prev",
+      "Goto prev error",
     },
 
-    ["]d"] = {
+    ["<leader>dn"] = {
       function()
         vim.diagnostic.goto_next { float = { border = "rounded" } }
       end,
-      "Goto next",
+      "Goto next error",
     },
 
-    ["<leader>q"] = {
+    ["<leader>dl"] = {
       function()
         vim.diagnostic.setloclist()
       end,
-      "Diagnostic setloclist",
+      "List with diagnostic",
     },
 
-    ["<leader>wa"] = {
-      function()
-        vim.lsp.buf.add_workspace_folder()
-      end,
-      "Add workspace folder",
-    },
+    ["<leader>fm"] = { "<cmd>lua vim.lsp.buf.format()<CR>", "Format" },
+    ["<leader>rn"] = { "<cmd>lua vim.lsp.buf.rename()<CR>", "Rename" },
+    ["<leader>fi"] = { "<cmd>lua vim.lsp.buf.code_action()<CR>", "Autofix" },
+    ["<leader>gi"] = { "<cmd>lua vim.lsp.buf.implementation()<CR>", "Go to implementation" },
+    ["<leader>gd"] = { "<cmd>lua vim.lsp.buf.definition()<CR>", "Go to definition" },
 
-    ["<leader>wr"] = {
-      function()
-        vim.lsp.buf.remove_workspace_folder()
-      end,
-      "Remove workspace folder",
-    },
-
-    ["<leader>wl"] = {
-      function()
-        print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
-      end,
-      "List workspace folders",
-    },
-  },
-}
-
-M.nvimtree = {
-  plugin = true,
-
-  n = {
-    -- toggle
-    ["<C-n>"] = { "<cmd> NvimTreeToggle <CR>", "Toggle nvimtree" },
-
-    -- focus
-    ["<leader>e"] = { "<cmd> NvimTreeFocus <CR>", "Focus nvimtree" },
   },
 }
 
@@ -270,9 +204,6 @@ M.telescope = {
     -- git
     ["<leader>cm"] = { "<cmd> Telescope git_commits <CR>", "Git commits" },
     ["<leader>gt"] = { "<cmd> Telescope git_status <CR>", "Git status" },
-
-    -- pick a hidden term
-    ["<leader>pt"] = { "<cmd> Telescope terms <CR>", "Pick hidden term" },
 
     -- theme switcher
     ["<leader>th"] = { "<cmd> Telescope themes <CR>", "Nvchad themes" },
@@ -388,6 +319,28 @@ M.blankline = {
       "Jump to current context",
     },
   },
+}
+
+M.markdown_preview = {
+  plugin = true,
+
+  n = {
+    ["<leader>mp"] = { ":MarkdownPreview<CR>", "Preview markdown" },
+  }
+}
+
+M.surround = {
+  plugin = true,
+
+  -- TODO: Add the sw and sl mappings
+  n = {
+    -- ["<leader>sw"] = {
+    --
+    -- },
+    -- ["<leader>sl"] = {
+    --
+    -- },
+  }
 }
 
 M.gitsigns = {

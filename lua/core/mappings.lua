@@ -32,6 +32,8 @@ M.general = {
     -- split
     ["<leader>sh"] = { "<cmd>split<CR>", "Split horizontal" },
     ["<leader>sv"] = { "<cmd>vsplit<CR>", "Split vertical" },
+    ["<leader>h"] = { "<cmd>split<CR>", "Split horizontal" },
+    ["<leader>v"] = { "<cmd>vsplit<CR>", "Split vertical" },
 
     -- Clear highlights
     ["<Esc>"] = { ":noh <CR>", "Clear highlights" },
@@ -286,15 +288,14 @@ M.nvterm = {
       "Toggle vertical term",
     },
 
-    -- new
-    ["<leader>h"] = {
+    ["<leader>th"] = {
       function()
         require("nvterm.terminal").new "horizontal"
       end,
       "New horizontal term",
     },
 
-    ["<leader>v"] = {
+    ["<leader>tv"] = {
       function()
         require("nvterm.terminal").new "vertical"
       end,

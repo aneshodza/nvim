@@ -367,8 +367,6 @@ if not os_check.is_fedora() then
       return require "plugins.configs.copilot"
     end,
   })
-else
-  vim.notify("fedora", vim.log.levels.INFO, { title = "Plugin Loaded" })
 end
 
 local config = require("core.utils").load_config()

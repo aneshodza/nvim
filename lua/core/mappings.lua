@@ -94,6 +94,9 @@ M.general = {
     -- Don't copy the replaced text after pasting in visual mode
     -- https://vim.fandom.com/wiki/Replace_a_word_with_yanked_text#Alternative_mapping_for_paste
     ["p"] = { 'p:let @+=@0<CR>:let @"=@0<CR>', "Dont copy replaced text", opts = { silent = true } },
+
+    ["<C-Up>"] = { ":move '<-2<CR>gv=gv", "Move selection up", opts = { silent = true } },
+    ["<C-Down>"] = { ":move '>+1<CR>gv=gv", "Move selection down", opts = { silent = true } },
   },
 }
 

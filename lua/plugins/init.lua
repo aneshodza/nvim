@@ -13,7 +13,7 @@ local plugins = {
   },
 
   {
-    "NvChad/ui",
+    "git@github.com:aneshodza/ui.git",
     branch = "v2.0",
     lazy = false,
   },

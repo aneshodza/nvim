@@ -38,6 +38,10 @@ M.general = {
     -- Clear highlights
     ["<Esc>"] = { ":noh <CR>", "Clear highlights" },
 
+    -- Swap lines
+    ["<C-Up>"] = { ":m .-2<CR>==", "Move line up" },
+    ["<C-Down>"] = { ":m .+1<CR>==", "Move line down" },
+
     -- switch between windows
     ["<C-h>"] = { "<C-w>h", "Window left" },
     ["<C-l>"] = { "<C-w>l", "Window right" },

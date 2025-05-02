@@ -1,17 +1,4 @@
---
--- if os_check.is_fedora() then
---   lspconfig.solargraph.setup{
---     cmd = {
---       '/home/aneshodza/solargraph_lsp_wrapper.sh'
---     }
---   }
--- else
---   lspconfig.solargraph.setup{}
--- end
-
 local lspconfig = require("lspconfig")
-local on_attach = require("plugins.configs.lspconfig").on_attach
-local capabilities = require("plugins.configs.lspconfig").capabilities
 
 local server_configs_path = vim.fn.stdpath("config") .. "/lua/plugins/configs/servers"
 

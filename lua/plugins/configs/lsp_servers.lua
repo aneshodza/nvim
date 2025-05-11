@@ -15,6 +15,8 @@ for _, file in ipairs(vim.fn.readdir(server_configs_path)) do
       else
         lspconfig[server_name].setup(opts)
       end
+    elseif not ok then
+      vim.notify("Error loading LSP config for " .. server_name .. ": " .. opts, vim.log.levels.ERROR)
     else
       vim.notify("Failed to load LSP config for " .. server_name, vim.log.levels.WARN)
     end

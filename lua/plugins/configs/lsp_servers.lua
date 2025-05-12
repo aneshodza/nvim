@@ -8,13 +8,7 @@ for _, file in ipairs(vim.fn.readdir(server_configs_path)) do
     local ok, opts = pcall(require, "plugins.configs.servers." .. server_name)
 
     if ok and type(opts) == "table" then
-      if not opts.on_attach then
-        vim.notify("Missing `on_attach` in config for LSP: " .. server_name, vim.log.levels.ERROR)
-      elseif not opts.capabilities then
-        vim.notify("Missing `capabilities` in config for LSP: " .. server_name, vim.log.levels.ERROR)
-      else
-        lspconfig[server_name].setup(opts)
-      end
+      lspconfig[server_name].setup(opts)
     elseif not ok then
       vim.notify("Error loading LSP config for " .. server_name .. ": " .. opts, vim.log.levels.ERROR)
     else

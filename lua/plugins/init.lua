@@ -190,6 +190,7 @@ local plugins = {
         "hrsh7th/cmp-nvim-lsp",
         "hrsh7th/cmp-buffer",
         "hrsh7th/cmp-path",
+        "zbirenbaum/copilot-cmp",
       },
     },
     opts = function()
@@ -354,17 +355,10 @@ if not os_check.is_fedora() then
   })
 
   table.insert(plugins, {
-    "hrsh7th/nvim-cmp",
-    dependencies = {
-      {
-        "zbirenbaum/copilot-cmp",
-        config = function()
-          require("copilot_cmp").setup()
-        end,
-      },
-    },
-    opts = function()
-      return require "plugins.configs.copilot"
+    "zbirenbaum/copilot-cmp",
+    after = "nvim-cmp",
+    config = function()
+      require("copilot_cmp").setup()
     end,
   })
 end

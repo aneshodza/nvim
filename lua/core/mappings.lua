@@ -15,19 +15,19 @@ M.general = {
     -- Find and replace in buffer
     ["<leader>rp"] = {
       ":lua local search = vim.fn.input('Search for: '); local replace = vim.fn.input('Replace with: '); vim.fn.feedkeys(':%s#' .. search .. '#' .. replace .. '#gi')<CR>",
-      "Replace word"
+      "Replace word",
     },
 
     -- resize
-    ['<leader>rhm'] = { "<cmd>horizontal resize +10<CR>", "Resize horizontal +10" },
-    ['<leader>rhl'] = { "<cmd>horizontal resize -10<CR>", "Resize horizontal -10" },
-    ['<leader>rhs'] = { "<cmd>horizontal resize 15<CR>", "Resize horizontal to be small (15)" },
-    ['<leader>rhc'] = { "<cmd>horizontal resize ", "Resize horizontal custom" },
+    ["<leader>rhm"] = { "<cmd>horizontal resize +10<CR>", "Resize horizontal +10" },
+    ["<leader>rhl"] = { "<cmd>horizontal resize -10<CR>", "Resize horizontal -10" },
+    ["<leader>rhs"] = { "<cmd>horizontal resize 15<CR>", "Resize horizontal to be small (15)" },
+    ["<leader>rhc"] = { "<cmd>horizontal resize ", "Resize horizontal custom" },
 
-    ['<leader>rvm'] = { "<cmd>vertical resize +10<CR>", "Resize vertical +10" },
-    ['<leader>rvl'] = { "<cmd>vertical resize -10<CR>", "Resize vertical -10" },
-    ['<leader>rvs'] = { "<cmd>vertical resize 15<CR>", "Resize vertical to be small (15)" },
-    ['<leader>rvc'] = { "<cmd>vertical resize ", "Resize vertical custom" },
+    ["<leader>rvm"] = { "<cmd>vertical resize +10<CR>", "Resize vertical +10" },
+    ["<leader>rvl"] = { "<cmd>vertical resize -10<CR>", "Resize vertical -10" },
+    ["<leader>rvs"] = { "<cmd>vertical resize 15<CR>", "Resize vertical to be small (15)" },
+    ["<leader>rvc"] = { "<cmd>vertical resize ", "Resize vertical custom" },
 
     -- split
     ["<leader>sh"] = { "<cmd>split<CR>", "Split horizontal" },
@@ -122,20 +122,20 @@ M.tabufline = {
         require("nvchad.tabufline").tabuflinePrev()
       end,
       "Previous buffer",
-    }
+    },
   },
 }
 
 M.nvimtree = {
   plugin = true,
 
-  n = { }
+  n = {},
 }
 
 M.comment = {
   plugin = true,
 
-  n = { }
+  n = {},
 }
 
 M.lspconfig = {
@@ -217,7 +217,19 @@ M.lspconfig = {
     ["<leader>fi"] = { "<cmd>lua vim.lsp.buf.code_action()<CR>", "Autofix" },
     ["<leader>gi"] = { "<cmd>lua vim.lsp.buf.implementation()<CR>", "Go to implementation" },
     ["<leader>gd"] = { "<cmd>lua vim.lsp.buf.definition()<CR>", "Go to definition" },
-
+    ["<leader>rf"] = { "<cmd>lua vim.lsp.buf.references()<CR>", "Show references" },
+    ["<leader>cl"] = {
+      function()
+        vim.lsp.codelens.run()
+      end,
+      "Run CodeLens",
+    },
+    ["<leader>cL"] = {
+      function()
+        vim.lsp.codelens.refresh()
+      end,
+      "Refresh CodeLens",
+    },
   },
 }
 
@@ -358,7 +370,7 @@ M.markdown_preview = {
 
   n = {
     ["<leader>mp"] = { ":MarkdownPreview<CR>", "Preview markdown" },
-  }
+  },
 }
 
 M.surround = {
@@ -372,7 +384,7 @@ M.surround = {
     -- ["<leader>sl"] = {
     --
     -- },
-  }
+  },
 }
 
 M.gitsigns = {

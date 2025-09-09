@@ -1,4 +1,6 @@
 local lspconfig = require("lspconfig")
+local on_attach = require("plugins.configs.lspconfig").on_attach
+local capabilities = require("plugins.configs.lspconfig").capabilities
 
 return {
   cmd = { "typescript-language-server", "--stdio" },
@@ -7,9 +9,9 @@ return {
     "typescript",
     "javascriptreact",
     "typescriptreact",
-    "html",
-    "css",
     "json"
   },
   root_dir = lspconfig.util.root_pattern("package.json", "tsconfig.json", ".git"),
+  on_attach = on_attach,
+  capabilities = capabilities,
 }

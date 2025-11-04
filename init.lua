@@ -26,6 +26,9 @@ vim.cmd('command! -nargs=* Q wqa <args>')
 -- Add T shortcut to toggle Filetree
 vim.cmd('command! -nargs=* T NvimTreeToggle <args>')
 
+-- Add C shortcut to collapse Filetree
+vim.cmd('command! -nargs=* C NvimTreeCollapse <args>')
+
 -- Set language to English
 vim.o.langmenu = 'en_US.UTF-8'
 vim.cmd('language messages en_US.UTF-8')

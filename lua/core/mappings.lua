@@ -181,9 +181,10 @@ M.lspconfig = {
       function()
         vim.lsp.buf.type_definition()
       end,
-      "LSP definition type",
+      "LSP type definition",
     },
 
+    -- Diagnostics
     ["<leader>df"] = {
       function()
         vim.diagnostic.open_float { border = "rounded" }
@@ -193,37 +194,77 @@ M.lspconfig = {
 
     ["<leader>dp"] = {
       function()
-        vim.diagnostic.goto_prev { float = { border = "rounded" } }
+        vim.diagnostic.jump { count = -1, float = true }
       end,
-      "Goto prev error",
+      "Prev diagnostic",
     },
 
     ["<leader>dn"] = {
       function()
-        vim.diagnostic.goto_next { float = { border = "rounded" } }
+        vim.diagnostic.jump { count = 1, float = true }
       end,
-      "Goto next error",
+      "Next diagnostic",
     },
 
     ["<leader>dl"] = {
       function()
         vim.diagnostic.setloclist()
       end,
-      "List with diagnostic",
+      "Diagnostics → loclist",
     },
 
-    ["<leader>fm"] = { "<cmd>lua vim.lsp.buf.format()<CR>", "Format" },
-    ["<leader>rn"] = { "<cmd>lua vim.lsp.buf.rename()<CR>", "Rename" },
-    ["<leader>fi"] = { "<cmd>lua vim.lsp.buf.code_action()<CR>", "Autofix" },
-    ["<leader>gi"] = { "<cmd>lua vim.lsp.buf.implementation()<CR>", "Go to implementation" },
-    ["<leader>gd"] = { "<cmd>lua vim.lsp.buf.definition()<CR>", "Go to definition" },
-    ["<leader>rf"] = { "<cmd>lua vim.lsp.buf.references()<CR>", "Show references" },
+    -- Editing actions
+    ["<leader>fm"] = {
+      function()
+        vim.lsp.buf.format()
+      end,
+      "Format buffer",
+    },
+
+    ["<leader>rn"] = {
+      function()
+        vim.lsp.buf.rename()
+      end,
+      "Rename symbol",
+    },
+
+    ["<leader>fi"] = {
+      function()
+        vim.lsp.buf.code_action()
+      end,
+      "Code actions / autofix",
+    },
+
+    -- Navigation (duplicates gd/gi but fine if you want leader variants)
+    ["<leader>gi"] = {
+      function()
+        vim.lsp.buf.implementation()
+      end,
+      "Go to implementation",
+    },
+
+    ["<leader>gd"] = {
+      function()
+        vim.lsp.buf.definition()
+      end,
+      "Go to definition",
+    },
+
+    ["<leader>rf"] = {
+      function()
+        vim.lsp.buf.references()
+      end,
+      "Show references",
+    },
+
+    -- CodeLens
     ["<leader>cl"] = {
       function()
         vim.lsp.codelens.run()
       end,
       "Run CodeLens",
     },
+
     ["<leader>cL"] = {
       function()
         vim.lsp.codelens.refresh()

@@ -23,6 +23,9 @@ require "plugins"
 -- Add Q shortcut to quit all
 vim.cmd('command! -nargs=* Q wqa <args>')
 
+-- Add S shortcut to suspend (just move to background)
+vim.cmd('command! -nargs=* S suspend')
+
 -- Add T shortcut to toggle Filetree
 vim.cmd('command! -nargs=* T NvimTreeToggle <args>')
 

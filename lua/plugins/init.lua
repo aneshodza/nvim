@@ -13,7 +13,7 @@ local plugins = {
   },
 
   {
-    "git@github.com:aneshodza/ui.git",
+    "https://github.com/aneshodza/ui.git",
     branch = "v2.0",
     lazy = false,
   },
@@ -57,7 +57,7 @@ local plugins = {
 
   {
     "lukas-reineke/indent-blankline.nvim",
-    version = "2.20.7",
+    main = "ibl",
     init = function()
       require("core.utils").lazy_load "indent-blankline.nvim"
     end,
@@ -67,7 +67,8 @@ local plugins = {
     config = function(_, opts)
       require("core.utils").load_mappings "blankline"
       dofile(vim.g.base46_cache .. "blankline")
-      require("indent_blankline").setup(opts)
+      
+      require("ibl").setup(opts)
     end,
   },
 
@@ -83,7 +84,7 @@ local plugins = {
     end,
     config = function(_, opts)
       dofile(vim.g.base46_cache .. "syntax")
-      require("nvim-treesitter.configs").setup(opts)
+      require("nvim-treesitter").setup(opts)
     end,
   },
 
@@ -137,10 +138,12 @@ local plugins = {
 
   {
     "neovim/nvim-lspconfig",
+    event = { "BufReadPost", "BufNewFile" },
     dependencies = {
       {
         "nvimtools/none-ls.nvim",
         name = "null-ls.nvim",
+        dependencies = { "nvimtools/none-ls-extras.nvim" },
         config = function()
           require "plugins.configs.null-ls"
         end,
@@ -148,7 +151,7 @@ local plugins = {
     },
     config = function()
       require "plugins.configs.lsp_servers"
-      return require "plugins.configs.lspconfig"
+      require "plugins.configs.lspconfig"
     end, -- Override to setup mason-lspconfig
   },
 
@@ -202,18 +205,11 @@ local plugins = {
   },
 
   {
-    "simrat39/rust-tools.nvim",
-    requires = {
-      "nvim-lua/popup.nvim",
-      "nvim-lua/plenary.nvim",
-      "nvim-telescope/telescope.nvim",
-      "mfussenegger/nvim-dap",
-    },
+    "mrcjkb/rustaceanvim",
+    version = "^5",
     ft = { "rust" },
     config = function()
-      require("rust-tools").setup {}
     end,
-    lazy = false,
   },
 
   {

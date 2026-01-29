@@ -1,10 +1,17 @@
-require "nvchad.lsp"
-
+-- Do NOT require "nvchad.lsp" here if it causes a loop
 local M = {}
 local utils = require "core.utils"
 
--- export on_attach & capabilities for custom lspconfigs
+-- 1. Setup Capabilities with nvim-cmp integration
+M.capabilities = vim.lsp.protocol.make_client_capabilities()
 
+-- This is the "Magic Link" that makes suggestions appear in the menu
+local present, cmp_lsp = pcall(require, "cmp_nvim_lsp")
+if present then
+  M.capabilities = cmp_lsp.default_capabilities(M.capabilities)
+end
+
+-- 2. Define on_attach
 M.on_attach = function(client, bufnr)
   client.server_capabilities.documentFormattingProvider = false
   client.server_capabilities.documentRangeFormattingProvider = false
@@ -20,9 +27,8 @@ M.on_attach = function(client, bufnr)
   end
 end
 
-M.capabilities = vim.lsp.protocol.make_client_capabilities()
-
-M.capabilities.textDocument.completion.completionItem = {
+-- 3. Add your manual completion overrides to the ALREADY updated capabilities
+M.capabilities.textDocument.completion.completionItem = vim.tbl_deep_extend("force", M.capabilities.textDocument.completion.completionItem or {}, {
   documentationFormat = { "markdown", "plaintext" },
   snippetSupport = true,
   preselectSupport = true,
@@ -38,26 +44,19 @@ M.capabilities.textDocument.completion.completionItem = {
       "additionalTextEdits",
     },
   },
-}
+})
 
-require("lspconfig").lua_ls.setup {
-  on_attach = M.on_attach,
-  capabilities = M.capabilities,
-
-  settings = {
-    Lua = {
-      diagnostics = {
-        globals = { "vim" },
-      },
-      workspace = {
-        library = {
-          [vim.fn.expand "$VIMRUNTIME/lua"] = true,
-          [vim.fn.expand "$VIMRUNTIME/lua/vim/lsp"] = true,
-          [vim.fn.stdpath "data" .. "/lazy/ui/nvchad_types"] = true,
-          [vim.fn.stdpath "data" .. "/lazy/lazy.nvim/lua/lazy"] = true,
+-- 4. Fix the scoping for rustaceanvim
+vim.g.rustaceanvim = {
+  server = {
+    -- Use M. to reference the functions defined above
+    on_attach = M.on_attach,
+    capabilities = M.capabilities,
+    default_settings = {
+      ["rust-analyzer"] = {
+        checkOnSave = {
+          command = "clippy",
         },
-        maxPreload = 100000,
-        preloadFileSize = 10000,
       },
     },
   },

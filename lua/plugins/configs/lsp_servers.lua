@@ -1,18 +1,16 @@
-local lspconfig = require("lspconfig")
+local server_configs_path = vim.fn.stdpath("config").. "/lua/plugins/configs/servers"
+local files = vim.fn.readdir(server_configs_path)
 
-local server_configs_path = vim.fn.stdpath("config") .. "/lua/plugins/configs/servers"
-
-for _, file in ipairs(vim.fn.readdir(server_configs_path)) do
+for _, file in ipairs(files) do
   if file:match("%.lua$") then
     local server_name = file:gsub("%.lua$", "")
-    local ok, opts = pcall(require, "plugins.configs.servers." .. server_name)
-
+    local ok, opts = pcall(require, "plugins.configs.servers.".. server_name)
+    
     if ok and type(opts) == "table" then
-      lspconfig[server_name].setup(opts)
-    elseif not ok then
-      vim.notify("Error loading LSP config for " .. server_name .. ": " .. opts, vim.log.levels.ERROR)
-    else
-      vim.notify("Failed to load LSP config for " .. server_name, vim.log.levels.WARN)
+      -- 1. Register the static configuration [7]
+      vim.lsp.config(server_name, opts)
+      -- 2. Enable the server (creates FileType autocommands) [3]
+      vim.lsp.enable(server_name)
     end
   end
 end

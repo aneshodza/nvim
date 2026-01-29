@@ -1,12 +1,14 @@
 local on_attach = require("plugins.configs.lspconfig").on_attach
-local cmp_nvim_lsp = require "cmp_nvim_lsp"
+local capabilities = require("plugins.configs.lspconfig").capabilities
 
 return {
   on_attach = on_attach,
-  capabilities = cmp_nvim_lsp.default_capabilities(),
+  capabilities = capabilities,
   cmd = { "solargraph", "stdio" },
   filetypes = { "ruby" },
-  root_dir = require("lspconfig.util").root_pattern("Gemfile", ".git"),
+  root_dir = function(bufnr)
+    return vim.fs.root(bufnr, { "Gemfile", ".git" })
+  end,
   settings = {
     solargraph = {
       diagnostics = true,

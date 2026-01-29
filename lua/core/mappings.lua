@@ -163,12 +163,6 @@ M.lspconfig = {
       "LSP hover",
     },
 
-    ["gi"] = {
-      function()
-        vim.lsp.buf.implementation()
-      end,
-      "LSP implementation",
-    },
 
     ["<leader>ls"] = {
       function()
@@ -235,19 +229,25 @@ M.lspconfig = {
       "Code actions / autofix",
     },
 
-    -- Navigation (duplicates gd/gi but fine if you want leader variants)
+    ["<leader>gr"] = {
+      function()
+        vim.lsp.buf.references()
+      end,
+      "Get references",
+    },
+
     ["<leader>gi"] = {
       function()
         vim.lsp.buf.implementation()
       end,
-      "Go to implementation",
+      "Get implementation",
     },
 
     ["<leader>gd"] = {
       function()
         vim.lsp.buf.definition()
       end,
-      "Go to definition",
+      "Get definition",
     },
 
     ["<leader>rf"] = {

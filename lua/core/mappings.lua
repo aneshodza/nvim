@@ -229,13 +229,6 @@ M.lspconfig = {
       "Code actions / autofix",
     },
 
-    ["<leader>gr"] = {
-      function()
-        vim.lsp.buf.references()
-      end,
-      "Get references",
-    },
-
     ["<leader>gi"] = {
       function()
         vim.lsp.buf.implementation()
@@ -252,7 +245,7 @@ M.lspconfig = {
 
     ["<leader>rf"] = {
       function()
-        vim.lsp.buf.references()
+        require('telescope.builtin').lsp_references()
       end,
       "Show references",
     },

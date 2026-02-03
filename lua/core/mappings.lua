@@ -77,6 +77,48 @@ M.general = {
       end,
       "LSP formatting",
     },
+
+    ["<leader>de"] = {
+      function()
+        -- 1. Get the root directory from OmniSharp
+        local root_dir = nil
+        for _, client in ipairs(vim.lsp.get_clients({ name = "omnisharp" })) do
+          root_dir = client.config.root_dir
+          break
+        end
+
+        -- Fallback to CWD if OmniSharp isn't running or hasn't found a root
+        root_dir = root_dir or vim.fn.getcwd()
+
+        -- 2. Check if 'dotnet' exists
+        if vim.fn.executable("dotnet") == 0 then
+          vim.api.nvim_err_writeln("Error: 'dotnet' command not found.")
+          return
+        end
+
+        -- 3. Notify and Build
+        print(" Building project at " .. root_dir)
+        
+        -- We use -C to run the command as if we were in the root_dir
+        local cmd = string.format("cd %s && dotnet build | grep -oE '[^ ]+\\.cs\\([0-9]+,[0-9]+\\)'", vim.fn.shellescape(root_dir))
+        
+        -- 4. Set format and run
+        vim.opt.errorformat = [[%f(%l\,%c)]]
+        local output = vim.fn.system(cmd)
+
+        if output ~= "" then
+          vim.fn.setqflist({}, ' ', {
+            title = " Dotnet Errors: " .. vim.fn.fnamemodify(root_dir, ":t"),
+            lines = vim.split(output, "\n")
+          })
+          vim.cmd("copen")
+        else
+          vim.cmd("cclose")
+          print("󱜙 Build successful, no errors were found!")
+        end
+      end,
+      " Open dotnet errors in quickfix",
+    }
   },
 
   t = {

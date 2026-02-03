@@ -100,7 +100,7 @@ M.general = {
         print(" Building project at " .. root_dir)
         
         -- We use -C to run the command as if we were in the root_dir
-        local cmd = string.format("cd %s && dotnet build | grep -oE '[^ ]+\\.cs\\([0-9]+,[0-9]+\\)'", vim.fn.shellescape(root_dir))
+        local cmd = string.format("cd %s && dotnet build --property WarningLevel=0 | grep -oE '[^ ]+\\.cs\\([0-9]+,[0-9]+\\)' | sort -u", vim.fn.shellescape(root_dir))
         
         -- 4. Set format and run
         vim.opt.errorformat = [[%f(%l\,%c)]]

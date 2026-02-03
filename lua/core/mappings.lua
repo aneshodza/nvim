@@ -105,6 +105,9 @@ M.general = {
         -- 4. Set format and run
         vim.opt.errorformat = [[%f(%l\,%c)]]
         local output = vim.fn.system(cmd)
+        output = vim.trim(output)
+
+        print(" Build completed.")
 
         if output ~= "" then
           vim.fn.setqflist({}, ' ', {
@@ -117,7 +120,7 @@ M.general = {
           print("󱜙 Build successful, no errors were found!")
         end
       end,
-      " Open dotnet errors in quickfix",
+      "Open dotnet errors in quickfix",
     }
   },
 

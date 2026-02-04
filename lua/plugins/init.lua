@@ -327,7 +327,6 @@ local plugins = {
     end,
   },
 
-  -- Only load whichkey after all the gui
   {
     "folke/which-key.nvim",
     keys = { "<leader>", '"', "'", "`", "c", "v", "g" },
@@ -339,25 +338,32 @@ local plugins = {
       require("which-key").setup(opts)
     end,
   },
-}
 
-if not os_check.is_fedora() then
-  table.insert(plugins, {
+  {
     "zbirenbaum/copilot.lua",
     event = "InsertEnter",
     opts = function()
       return require("plugins.configs.copilot")
     end
-  })
+  },
 
-  table.insert(plugins, {
+  {
     "zbirenbaum/copilot-cmp",
     after = "nvim-cmp",
     config = function()
       require("copilot_cmp").setup()
     end,
-  })
-end
+  },
+
+  {
+    "folke/todo-comments.nvim",
+    dependencies = { "nvim-lua/plenary.nvim" },
+    lazy = false,
+    opts = {
+      signs = true, 
+    }
+  }
+}
 
 local config = require("core.utils").load_config()
 

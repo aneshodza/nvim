@@ -121,7 +121,36 @@ M.general = {
         end
       end,
       "Open dotnet errors in quickfix",
-    }
+    },
+
+    ["<leader>gc"] = {
+      function()
+        -- 1. Get only the lines starting with <<<<<<< from unmerged files
+        local cmd = "git diff --name-only --diff-filter=U --relative 2>/dev/null | xargs grep -nH '^<<<<<<<' | awk -F: '{count[$1]++; print $1\":\"$2\":  Conflict #\"count[$1]}'"
+        local output = vim.fn.systemlist(cmd)
+
+        if #output > 0 then
+          local old_efm = vim.opt.errorformat
+          -- grep -nH output is 'filename:line:text'
+          vim.opt.errorformat = "%f:%l:%m"
+
+          vim.fn.setqflist({}, ' ', {
+            title = "󰊢 Git Conflicts",
+            lines = output
+          })
+
+          vim.opt.errorformat = old_efm
+          vim.cmd("copen")
+          print("󰊢 Found " .. #output .. " conflict blocks.")
+        else
+          vim.cmd("cclose")
+          print("󰄬 No conflict markers found!")
+        end
+      end,
+      "Open unique conflict markers in quickfix",
+    },
+
+    ["<leader>td"] = { "<cmd>TodoTelescope<cr>", "Search TODOs" },
   },
 
   t = {

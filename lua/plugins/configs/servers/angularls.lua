@@ -29,9 +29,6 @@ return {
     local root = vim.fs.root(fname, { 
       "angular.json", 
       "nx.json", 
-      "tsconfig.json", 
-      "package.json", 
-      ".git" 
     })
     
     if root then

@@ -1,34 +1,49 @@
--- Expand paths immediately to avoid execution failures in WSL
-local dotnet_bin = vim.fn.expand("/home/aneshodza/.dotnet/dotnet")
--- Ensure this points to the actual OmniSharp.dll if using 'dotnet' to run it
-local omnisharp_dll = vim.fn.expand("/home/aneshodza/.local/share/nvim/omnisharp/OmniSharp.dll")
+local is_mac = vim.loop.os_uname().sysname == "Darwin"
+local home = os.getenv("HOME")
 
--- Environment setup
-vim.env.DOTNET_ROOT = "/home/aneshodza/.dotnet"
+-- Initialize variables
+local dotnet_bin = "dotnet"
+local omnisharp_dll = ""
+
+if is_mac then
+    local handle = io.popen("asdf where dotnet 2>/dev/null")
+    local asdf_path = handle:read("*a"):gsub("%s+", "")
+    handle:close()
+
+    if asdf_path ~= "" then
+        dotnet_bin = asdf_path .. "/dotnet"
+        vim.env.DOTNET_ROOT = asdf_path
+    else
+        dotnet_bin = vim.fn.exepath("dotnet")
+        vim.env.DOTNET_ROOT = home .. "/.dotnet"
+    end
+    omnisharp_dll = home .. "/.local/share/nvim/mason/packages/omnisharp/libexec/OmniSharp.dll"
+else
+    -- WSL / Linux
+    dotnet_bin = home .. "/.dotnet/dotnet"
+    omnisharp_dll = home .. "/.local/share/nvim/omnisharp/OmniSharp.dll"
+    vim.env.DOTNET_ROOT = home .. "/.dotnet"
+end
+
 vim.env.MSBUILDDISABLENODEREUSE = "1" 
 
 return {
+  -- Use the list of filetypes the server should attach to
   filetypes = { "cs", "vb", "csproj", "sln" },
   
-  -- Use a function for cmd to dynamically include the PID and absolute paths
   cmd = {
     dotnet_bin,
     omnisharp_dll,
     "--languageserver",
     "--hostPID",
     tostring(vim.fn.getpid()),
-    "--loglevel", "information",
   },
   
-  -- Neovim 0.11 requires the on_dir callback to trigger buffer attachment [4]
-  root_dir = function(bufnr, on_dir)
-    local fname = vim.api.nvim_buf_get_name(bufnr)
-    -- prioritize.sln for OmniSharp stability in WSL [3, 5]
-    local root = vim.fs.root(fname, { "*.sln", "*.csproj", ".git" })
-    
-    if root then
-      on_dir(root) -- This is the missing link that attaches the buffer
-    end
+  root_dir = function(fname)
+    -- Corrected glob-like behavior for 0.11
+    return vim.fs.root(fname, function(name)
+      return name:match("%.sln$") or name:match("%.csproj$")
+    end) or vim.fs.root(fname, ".git") or vim.fs.dirname(fname)
   end,
   
   settings = {
@@ -39,27 +54,20 @@ return {
       analyzeOpenDocumentsOnly = true, 
       enableMsBuildLoadProjectsOnDemand = true,
     },
-    roslyn = {
-      extensionsOptions = {
-        enableImportCompletion = true,
-        enableAnalyzersSupport = true,
-      },
-    },
   },
-  
-  -- Capabilities for completion (e.g., cmp-nvim-lsp) [6]
+
+  -- Ensure capabilities are handled safely for the new API
   capabilities = (function()
     local ok, lsp_configs = pcall(require, "plugins.configs.lspconfig")
-    return ok and lsp_configs.capabilities or nil
+    return ok and lsp_configs.capabilities or vim.lsp.protocol.make_client_capabilities()
   end)(),
 
-  -- Mapping formatting and other logic to the native attach event
   on_attach = function(client, bufnr)
     client.server_capabilities.documentFormattingProvider = false
     client.server_capabilities.documentRangeFormattingProvider = false
-    
-    -- Optional: Import your custom keymaps
     local ok, lsp_configs = pcall(require, "plugins.configs.lspconfig")
-    if ok then lsp_configs.on_attach(client, bufnr) end
+    if ok and lsp_configs.on_attach then 
+        lsp_configs.on_attach(client, bufnr) 
+    end
   end,
 }

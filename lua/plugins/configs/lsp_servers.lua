@@ -16,8 +16,9 @@ for _, file in ipairs(files) do
         capabilities = common.capabilities,
       }, opts or {})
 
-      -- 3. Enable the server
-      vim.lsp.enable(server_name, final_opts)
+      -- 3. Configure and enable the server
+      vim.lsp.config(server_name, final_opts)
+      vim.lsp.enable(server_name)
     end
   end
 end

@@ -29,7 +29,7 @@ vim.env.MSBUILDDISABLENODEREUSE = "1"
 
 return {
   -- Use the list of filetypes the server should attach to
-  filetypes = { "cs", "vb", "csproj", "sln" },
+  filetypes = { "cs", "vb", "csproj", "sln", "slnx" },
   
   cmd = {
     dotnet_bin,
@@ -39,11 +39,14 @@ return {
     tostring(vim.fn.getpid()),
   },
   
-  root_dir = function(fname)
-    -- Corrected glob-like behavior for 0.11
-    return vim.fs.root(fname, function(name)
-      return name:match("%.sln$") or name:match("%.csproj$")
-    end) or vim.fs.root(fname, ".git") or vim.fs.dirname(fname)
+  root_dir = function(bufnr, on_dir)
+    local fname = vim.api.nvim_buf_get_name(bufnr)
+    local root = vim.fs.root(fname, function(name)
+      return name:match("%.slnx?$") or name:match("%.csproj$")
+    end) or vim.fs.root(fname, ".git")
+    if root then
+      on_dir(root)
+    end
   end,
   
   settings = {

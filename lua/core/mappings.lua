@@ -484,14 +484,9 @@ M.markdown_preview = {
 M.surround = {
   plugin = true,
 
-  -- TODO: Add the sw and sl mappings
   n = {
-    -- ["<leader>sw"] = {
-    --
-    -- },
-    -- ["<leader>sl"] = {
-    --
-    -- },
+    ["<leader>sw"] = { "ysiw", "Surround word", opts = { remap = true } },
+    ["<leader>sl"] = { "yss", "Surround line", opts = { remap = true } },
   },
 }
 

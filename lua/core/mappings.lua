@@ -73,9 +73,9 @@ M.general = {
 
     ["<leader>fm"] = {
       function()
-        vim.lsp.buf.format { async = true }
+        require("conform").format { async = true, lsp_fallback = true }
       end,
-      "LSP formatting",
+      "Format buffer",
     },
 
     ["<leader>de"] = {
@@ -284,7 +284,7 @@ M.lspconfig = {
     -- Editing actions
     ["<leader>fm"] = {
       function()
-        vim.lsp.buf.format()
+        require("conform").format { async = true, lsp_fallback = true }
       end,
       "Format buffer",
     },

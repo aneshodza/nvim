@@ -1,8 +1,6 @@
 local present, null_ls = pcall(require, "null-ls")
 if not present then return end
 
-local b = null_ls.builtins
-
 local function use_extra(path)
   local ok, extra = pcall(require, "none-ls." .. path)
   if ok then
@@ -12,16 +10,6 @@ local function use_extra(path)
 end
 
 local sources = {
-  b.formatting.prettier.with({
-    filetypes = { "html", "htmlangular", "markdown", "css", "javascript", "typescript", "json" },
-    prefer_local = "node_modules/.bin",
-  }),
-
-  b.formatting.csharpier.with({
-    command = "csharpier",
-    args = { "format", "--stdin", "--config-path", "/home/aneshodza/work/Aventis/.editorconfig" },
-  }),
-
   use_extra("diagnostics.eslint_d") and use_extra("diagnostics.eslint_d").with({
     filetypes = { "javascript", "typescript", "html", "htmlangular" },
     timeout = 5000,

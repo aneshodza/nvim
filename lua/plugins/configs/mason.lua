@@ -11,7 +11,7 @@ local options = {
     "clang-format",
   }, -- not an option from mason.nvim
 
-  PATH = "skip",
+  PATH = "prepend",
 
   ui = {
     icons = {

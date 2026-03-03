@@ -137,6 +137,14 @@ local plugins = {
   },
 
   {
+    "stevearc/conform.nvim",
+    event = { "BufReadPost", "BufNewFile" },
+    opts = function()
+      return require "plugins.configs.conform"
+    end,
+  },
+
+  {
     "neovim/nvim-lspconfig",
     event = { "BufReadPost", "BufNewFile" },
     dependencies = {

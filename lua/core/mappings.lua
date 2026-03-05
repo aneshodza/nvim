@@ -490,6 +490,14 @@ M.surround = {
   },
 }
 
+M.aerial = {
+  plugin = true,
+
+  n = {
+    ["<leader>sa"] = { "<cmd>AerialToggle right<CR>", "Show aerial (symbols outline)" },
+  },
+}
+
 M.gitsigns = {
   plugin = true,
 

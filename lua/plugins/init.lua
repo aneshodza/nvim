@@ -364,6 +364,18 @@ local plugins = {
   },
 
   {
+    "stevearc/aerial.nvim",
+    dependencies = { "nvim-treesitter/nvim-treesitter", "nvim-tree/nvim-web-devicons" },
+    cmd = { "AerialToggle" },
+    init = function()
+      require("core.utils").load_mappings "aerial"
+    end,
+    opts = function()
+      return require "plugins.configs.aerial"
+    end,
+  },
+
+  {
     "folke/todo-comments.nvim",
     dependencies = { "nvim-lua/plenary.nvim" },
     lazy = false,

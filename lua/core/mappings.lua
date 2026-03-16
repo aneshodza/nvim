@@ -274,6 +274,20 @@ M.lspconfig = {
       "Next diagnostic",
     },
 
+    ["<leader>dc"] = {
+      function()
+        local diagnostics = vim.diagnostic.get(0, { lnum = vim.api.nvim_win_get_cursor(0)[1] - 1 })
+        if #diagnostics == 0 then
+          print("No diagnostics under cursor")
+          return
+        end
+        local messages = vim.tbl_map(function(d) return d.message end, diagnostics)
+        vim.fn.setreg("+", table.concat(messages, "\n"))
+        print("Copied " .. #diagnostics .. " diagnostic(s)")
+      end,
+      "Copy diagnostic to clipboard",
+    },
+
     ["<leader>dl"] = {
       function()
         vim.diagnostic.setloclist()
@@ -495,6 +509,14 @@ M.aerial = {
 
   n = {
     ["<leader>sa"] = { "<cmd>AerialToggle right<CR>", "Show aerial (symbols outline)" },
+  },
+}
+
+M.vimtex = {
+  plugin = true,
+
+  n = {
+    ["<leader>lp"] = { "<cmd>VimtexCompile<CR>", "LaTeX compile and watch" },
   },
 }
 

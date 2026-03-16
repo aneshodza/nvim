@@ -84,7 +84,7 @@ local plugins = {
     end,
     config = function(_, opts)
       dofile(vim.g.base46_cache .. "syntax")
-      require("nvim-treesitter").setup(opts)
+      require("nvim-treesitter.configs").setup(opts)
     end,
   },
 
@@ -231,6 +231,14 @@ local plugins = {
   {
     "lervag/vimtex",
     ft = { "tex" },
+    init = function()
+      vim.g.vimtex_view_method = "skim"
+      vim.g.vimtex_compiler_method = "latexmk"
+      vim.g.vimtex_compiler_latexmk = {
+        continuous = 1,
+      }
+      require("core.utils").load_mappings "vimtex"
+    end,
   },
 
   {

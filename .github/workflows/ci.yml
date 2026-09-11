@@ -66,9 +66,25 @@ jobs:
       - name: Install plugins at locked revisions
         run: nvim --headless -u init.lua "+Lazy! restore" +qa || true
 
-      - name: Lockfile is reproducible
-        run: git diff --exit-code -- lazy-lock.json
-
-      # Boots the real config and asserts on the result.
+      # Boots the real config and asserts on the result. Runs before the
+      # lockfile check so a version nit can never mask a real failure.
       - name: Smoke
         run: nvim --headless -l scripts/smoke.lua
+
+      - name: Plugins match the lockfile
+        run: |
+          # lazy.nvim is excluded on purpose: init.lua bootstraps it with
+          # `git clone --branch=stable` before the lockfile can be read, so its
+          # own entry legitimately tracks whatever stable currently is. Every
+          # other plugin must match what Lazy! restore checked out.
+          git diff -- lazy-lock.json \
+            | grep -E '^[+-]  "' \
+            | grep -v '"lazy\.nvim"' > /tmp/drift || true
+
+          if [ -s /tmp/drift ]; then
+            echo "::error::plugins drifted from lazy-lock.json"
+            cat /tmp/drift
+            exit 1
+          fi
+
+          echo "no drift"

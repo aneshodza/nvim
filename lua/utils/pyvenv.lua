@@ -30,8 +30,13 @@ function M.ensure(path)
   local lines = vim.fn.readfile(path)
   local changed, seen = false, false
 
+  -- vim.pesc matters: the key contains '-', which is a quantifier in a Lua
+  -- pattern, so an unescaped match never fires and every call appends a
+  -- duplicate line instead of rewriting the existing one.
+  local key_pat = "^%s*" .. vim.pesc(KEY) .. "%s*="
+
   for i, line in ipairs(lines) do
-    if line:match("^%s*" .. KEY .. "%s*=") then
+    if line:match(key_pat) then
       seen = true
 
       if not line:match "=%s*false%s*$" then

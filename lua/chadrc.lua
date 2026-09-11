@@ -9,8 +9,10 @@ return {
   -- formatters, so angular-language-server, omnisharp, csharpier, basedpyright,
   -- python-lsp-server, clangd, prettier and friends come for free.
   mason = {
-    -- not derivable: eslint_d is used through null-ls, stylua only by conform
-    pkgs = { "eslint_d", "stylua" },
+    -- Not derivable: eslint_d comes in through null-ls, stylua only through
+    -- conform, and rust-analyzer is driven by rustaceanvim rather than by a
+    -- server spec in configs/servers.
+    pkgs = { "eslint_d", "rust-analyzer", "stylua" },
     -- a ruby gem, not a mason package: gem install solargraph
     skip = { "solargraph" },
   },

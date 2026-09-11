@@ -24,10 +24,8 @@ local function probe_paths()
   end
 
   -- fall back to mason's typescript so the server works before npm install
-  local mason_ts = vim.fs.joinpath(
-    vim.fn.stdpath "data",
-    "mason/packages/typescript-language-server/node_modules/typescript/lib"
-  )
+  local mason_ts =
+    vim.fs.joinpath(vim.fn.stdpath "data", "mason/packages/typescript-language-server/node_modules/typescript/lib")
 
   if vim.fn.isdirectory(mason_ts) == 1 then
     table.insert(probes, mason_ts)

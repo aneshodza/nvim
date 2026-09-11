@@ -19,8 +19,7 @@ return {
     -- mason's bin dir is on PATH, so the wrapper resolves dotnet itself
     local bin = vim.fn.exepath "omnisharp"
 
-    local cmd = bin ~= ""
-        and { bin }
+    local cmd = bin ~= "" and { bin }
       or {
         "dotnet",
         vim.fs.joinpath(vim.fn.stdpath "data", "mason/packages/omnisharp/libexec/OmniSharp.dll"),

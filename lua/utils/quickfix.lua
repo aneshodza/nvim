@@ -24,8 +24,7 @@ function M.dotnet_build()
   vim.notify(" Building project at " .. root_dir)
 
   local cmd = string.format(
-    "cd %s && dotnet build --property WarningLevel=0 "
-      .. "| grep -oE '[^ ]+\\.cs\\([0-9]+,[0-9]+\\)' | sort -u",
+    "cd %s && dotnet build --property WarningLevel=0 " .. "| grep -oE '[^ ]+\\.cs\\([0-9]+,[0-9]+\\)' | sort -u",
     vim.fn.shellescape(root_dir)
   )
 
@@ -50,7 +49,7 @@ end
 function M.git_conflicts()
   local cmd = "git diff --name-only --diff-filter=U --relative 2>/dev/null "
     .. "| xargs grep -nH '^<<<<<<<' "
-    .. "| awk -F: '{count[$1]++; print $1\":\"$2\":  Conflict #\"count[$1]}'"
+    .. '| awk -F: \'{count[$1]++; print $1":"$2":  Conflict #"count[$1]}\''
 
   local output = vim.fn.systemlist(cmd)
 

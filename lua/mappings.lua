@@ -42,9 +42,19 @@ map("n", "<C-Down>", ":m .+1<CR>==", { desc = "Move line down" })
 local wrapped = { expr = true }
 map("n", "j", 'v:count || mode(1)[0:1] == "no" ? "j" : "gj"', vim.tbl_extend("force", wrapped, { desc = "Move down" }))
 map("n", "k", 'v:count || mode(1)[0:1] == "no" ? "k" : "gk"', vim.tbl_extend("force", wrapped, { desc = "Move up" }))
-map("n", "<Down>", 'v:count || mode(1)[0:1] == "no" ? "j" : "gj"', vim.tbl_extend("force", wrapped, { desc = "Move down" }))
+map(
+  "n",
+  "<Down>",
+  'v:count || mode(1)[0:1] == "no" ? "j" : "gj"',
+  vim.tbl_extend("force", wrapped, { desc = "Move down" })
+)
 map("n", "<Up>", 'v:count || mode(1)[0:1] == "no" ? "k" : "gk"', vim.tbl_extend("force", wrapped, { desc = "Move up" }))
-map("v", "<Down>", 'v:count || mode(1)[0:1] == "no" ? "j" : "gj"', vim.tbl_extend("force", wrapped, { desc = "Move down" }))
+map(
+  "v",
+  "<Down>",
+  'v:count || mode(1)[0:1] == "no" ? "j" : "gj"',
+  vim.tbl_extend("force", wrapped, { desc = "Move down" })
+)
 map("v", "<Up>", 'v:count || mode(1)[0:1] == "no" ? "k" : "gk"', vim.tbl_extend("force", wrapped, { desc = "Move up" }))
 map("x", "j", 'v:count || mode(1)[0:1] == "no" ? "j" : "gj"', vim.tbl_extend("force", wrapped, { desc = "Move down" }))
 map("x", "k", 'v:count || mode(1)[0:1] == "no" ? "k" : "gk"', vim.tbl_extend("force", wrapped, { desc = "Move up" }))

@@ -115,3 +115,30 @@ local new_cmd = vim.api.nvim_create_user_command
 new_cmd("NvChadUpdate", function()
   require "nvchad.updater"()
 end, {})
+
+-- Define the icons you want for the gutter
+local signs = { Error = "󰅚 ", Warn = "󱄊 ", Hint = "󰌶 ", Info = "󰋽 " }
+for type, icon in pairs(signs) do
+  local hl = "DiagnosticSign" .. type
+  vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = hl })
+end
+
+-- Configure the global diagnostic display
+vim.diagnostic.config({
+  virtual_text = {
+    prefix = '●',
+    spacing = 4,
+    severity = { min = vim.diagnostic.severity.HINT },
+  },
+  signs = true,
+  update_in_insert = false,
+  severity_sort = true,
+  float = {
+    focused = false,
+    style = "minimal",
+    border = "rounded",
+    source = "always",
+    header = "",
+    prefix = "",
+  },
+})

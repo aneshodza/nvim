@@ -1,6 +1,8 @@
 local options = {
   ensure_installed = {
     "lua-language-server",
+    "basedpyright",
+    "python-lsp-server",
     "stylua",
     "css-lsp",
     "html-lsp",
@@ -11,7 +13,7 @@ local options = {
     "clang-format",
   }, -- not an option from mason.nvim
 
-  PATH = "skip",
+  PATH = "prepend",
 
   ui = {
     icons = {

@@ -73,10 +73,84 @@ M.general = {
 
     ["<leader>fm"] = {
       function()
-        vim.lsp.buf.format { async = true }
+        require("conform").format { async = true, lsp_fallback = true }
       end,
-      "LSP formatting",
+      "Format buffer",
     },
+
+    ["<leader>de"] = {
+      function()
+        -- 1. Get the root directory from OmniSharp
+        local root_dir = nil
+        for _, client in ipairs(vim.lsp.get_clients({ name = "omnisharp" })) do
+          root_dir = client.config.root_dir
+          break
+        end
+
+        -- Fallback to CWD if OmniSharp isn't running or hasn't found a root
+        root_dir = root_dir or vim.fn.getcwd()
+
+        -- 2. Check if 'dotnet' exists
+        if vim.fn.executable("dotnet") == 0 then
+          vim.api.nvim_err_writeln("Error: 'dotnet' command not found.")
+          return
+        end
+
+        -- 3. Notify and Build
+        print(" Building project at " .. root_dir)
+        
+        -- We use -C to run the command as if we were in the root_dir
+        local cmd = string.format("cd %s && dotnet build --property WarningLevel=0 | grep -oE '[^ ]+\\.cs\\([0-9]+,[0-9]+\\)' | sort -u", vim.fn.shellescape(root_dir))
+        
+        -- 4. Set format and run
+        vim.opt.errorformat = [[%f(%l\,%c)]]
+        local output = vim.fn.system(cmd)
+        output = vim.trim(output)
+
+        print(" Build completed.")
+
+        if output ~= "" then
+          vim.fn.setqflist({}, ' ', {
+            title = " Dotnet Errors: " .. vim.fn.fnamemodify(root_dir, ":t"),
+            lines = vim.split(output, "\n")
+          })
+          vim.cmd("copen")
+        else
+          vim.cmd("cclose")
+          print("󱜙 Build successful, no errors were found!")
+        end
+      end,
+      "Open dotnet errors in quickfix",
+    },
+
+    ["<leader>gc"] = {
+      function()
+        -- 1. Get only the lines starting with <<<<<<< from unmerged files
+        local cmd = "git diff --name-only --diff-filter=U --relative 2>/dev/null | xargs grep -nH '^<<<<<<<' | awk -F: '{count[$1]++; print $1\":\"$2\":  Conflict #\"count[$1]}'"
+        local output = vim.fn.systemlist(cmd)
+
+        if #output > 0 then
+          local old_efm = vim.opt.errorformat
+          -- grep -nH output is 'filename:line:text'
+          vim.opt.errorformat = "%f:%l:%m"
+
+          vim.fn.setqflist({}, ' ', {
+            title = "󰊢 Git Conflicts",
+            lines = output
+          })
+
+          vim.opt.errorformat = old_efm
+          vim.cmd("copen")
+          print("󰊢 Found " .. #output .. " conflict blocks.")
+        else
+          vim.cmd("cclose")
+          print("󰄬 No conflict markers found!")
+        end
+      end,
+      "Open unique conflict markers in quickfix",
+    },
+
+    ["<leader>td"] = { "<cmd>TodoTelescope<cr>", "Search TODOs" },
   },
 
   t = {
@@ -163,12 +237,6 @@ M.lspconfig = {
       "LSP hover",
     },
 
-    ["gi"] = {
-      function()
-        vim.lsp.buf.implementation()
-      end,
-      "LSP implementation",
-    },
 
     ["<leader>ls"] = {
       function()
@@ -206,6 +274,20 @@ M.lspconfig = {
       "Next diagnostic",
     },
 
+    ["<leader>dc"] = {
+      function()
+        local diagnostics = vim.diagnostic.get(0, { lnum = vim.api.nvim_win_get_cursor(0)[1] - 1 })
+        if #diagnostics == 0 then
+          print("No diagnostics under cursor")
+          return
+        end
+        local messages = vim.tbl_map(function(d) return d.message end, diagnostics)
+        vim.fn.setreg("+", table.concat(messages, "\n"))
+        print("Copied " .. #diagnostics .. " diagnostic(s)")
+      end,
+      "Copy diagnostic to clipboard",
+    },
+
     ["<leader>dl"] = {
       function()
         vim.diagnostic.setloclist()
@@ -216,7 +298,7 @@ M.lspconfig = {
     -- Editing actions
     ["<leader>fm"] = {
       function()
-        vim.lsp.buf.format()
+        require("conform").format { async = true, lsp_fallback = true }
       end,
       "Format buffer",
     },
@@ -230,29 +312,28 @@ M.lspconfig = {
 
     ["<leader>fi"] = {
       function()
-        vim.lsp.buf.code_action()
+        require("plugins.configs.lspconfig").code_action()
       end,
       "Code actions / autofix",
     },
 
-    -- Navigation (duplicates gd/gi but fine if you want leader variants)
     ["<leader>gi"] = {
       function()
         vim.lsp.buf.implementation()
       end,
-      "Go to implementation",
+      "Get implementation",
     },
 
     ["<leader>gd"] = {
       function()
         vim.lsp.buf.definition()
       end,
-      "Go to definition",
+      "Get definition",
     },
 
     ["<leader>rf"] = {
       function()
-        vim.lsp.buf.references()
+        require('telescope.builtin').lsp_references()
       end,
       "Show references",
     },
@@ -417,14 +498,25 @@ M.markdown_preview = {
 M.surround = {
   plugin = true,
 
-  -- TODO: Add the sw and sl mappings
   n = {
-    -- ["<leader>sw"] = {
-    --
-    -- },
-    -- ["<leader>sl"] = {
-    --
-    -- },
+    ["<leader>sw"] = { "ysiw", "Surround word", opts = { remap = true } },
+    ["<leader>sl"] = { "yss", "Surround line", opts = { remap = true } },
+  },
+}
+
+M.aerial = {
+  plugin = true,
+
+  n = {
+    ["<leader>sa"] = { "<cmd>AerialToggle right<CR>", "Show aerial (symbols outline)" },
+  },
+}
+
+M.vimtex = {
+  plugin = true,
+
+  n = {
+    ["<leader>lp"] = { "<cmd>VimtexCompile<CR>", "LaTeX compile and watch" },
   },
 }
 

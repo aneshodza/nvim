@@ -13,7 +13,7 @@ local plugins = {
   },
 
   {
-    "git@github.com:aneshodza/ui.git",
+    "https://github.com/aneshodza/ui.git",
     branch = "v2.0",
     lazy = false,
   },
@@ -57,7 +57,7 @@ local plugins = {
 
   {
     "lukas-reineke/indent-blankline.nvim",
-    version = "2.20.7",
+    main = "ibl",
     init = function()
       require("core.utils").lazy_load "indent-blankline.nvim"
     end,
@@ -67,7 +67,8 @@ local plugins = {
     config = function(_, opts)
       require("core.utils").load_mappings "blankline"
       dofile(vim.g.base46_cache .. "blankline")
-      require("indent_blankline").setup(opts)
+      
+      require("ibl").setup(opts)
     end,
   },
 
@@ -136,11 +137,21 @@ local plugins = {
   },
 
   {
+    "stevearc/conform.nvim",
+    event = { "BufReadPost", "BufNewFile" },
+    opts = function()
+      return require "plugins.configs.conform"
+    end,
+  },
+
+  {
     "neovim/nvim-lspconfig",
+    event = { "BufReadPost", "BufNewFile" },
     dependencies = {
       {
         "nvimtools/none-ls.nvim",
         name = "null-ls.nvim",
+        dependencies = { "nvimtools/none-ls-extras.nvim" },
         config = function()
           require "plugins.configs.null-ls"
         end,
@@ -148,7 +159,7 @@ local plugins = {
     },
     config = function()
       require "plugins.configs.lsp_servers"
-      return require "plugins.configs.lspconfig"
+      require "plugins.configs.lspconfig"
     end, -- Override to setup mason-lspconfig
   },
 
@@ -202,18 +213,11 @@ local plugins = {
   },
 
   {
-    "simrat39/rust-tools.nvim",
-    requires = {
-      "nvim-lua/popup.nvim",
-      "nvim-lua/plenary.nvim",
-      "nvim-telescope/telescope.nvim",
-      "mfussenegger/nvim-dap",
-    },
+    "mrcjkb/rustaceanvim",
+    version = "^5",
     ft = { "rust" },
     config = function()
-      require("rust-tools").setup {}
     end,
-    lazy = false,
   },
 
   {
@@ -227,6 +231,14 @@ local plugins = {
   {
     "lervag/vimtex",
     ft = { "tex" },
+    init = function()
+      vim.g.vimtex_view_method = "skim"
+      vim.g.vimtex_compiler_method = "latexmk"
+      vim.g.vimtex_compiler_latexmk = {
+        continuous = 1,
+      }
+      require("core.utils").load_mappings "vimtex"
+    end,
   },
 
   {
@@ -331,7 +343,6 @@ local plugins = {
     end,
   },
 
-  -- Only load whichkey after all the gui
   {
     "folke/which-key.nvim",
     keys = { "<leader>", '"', "'", "`", "c", "v", "g" },
@@ -343,25 +354,44 @@ local plugins = {
       require("which-key").setup(opts)
     end,
   },
-}
 
-if not os_check.is_fedora() then
-  table.insert(plugins, {
+  {
     "zbirenbaum/copilot.lua",
     event = "InsertEnter",
     opts = function()
       return require("plugins.configs.copilot")
     end
-  })
+  },
 
-  table.insert(plugins, {
+  {
     "zbirenbaum/copilot-cmp",
     after = "nvim-cmp",
     config = function()
       require("copilot_cmp").setup()
     end,
-  })
-end
+  },
+
+  {
+    "stevearc/aerial.nvim",
+    dependencies = { "nvim-treesitter/nvim-treesitter", "nvim-tree/nvim-web-devicons" },
+    cmd = { "AerialToggle" },
+    init = function()
+      require("core.utils").load_mappings "aerial"
+    end,
+    opts = function()
+      return require "plugins.configs.aerial"
+    end,
+  },
+
+  {
+    "folke/todo-comments.nvim",
+    dependencies = { "nvim-lua/plenary.nvim" },
+    lazy = false,
+    opts = {
+      signs = true, 
+    }
+  }
+}
 
 local config = require("core.utils").load_config()
 

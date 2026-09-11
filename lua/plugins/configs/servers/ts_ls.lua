@@ -1,7 +1,3 @@
-local lspconfig = require("lspconfig")
-local on_attach = require("plugins.configs.lspconfig").on_attach
-local capabilities = require("plugins.configs.lspconfig").capabilities
-
 return {
   cmd = { "typescript-language-server", "--stdio" },
   filetypes = {
@@ -9,9 +5,19 @@ return {
     "typescript",
     "javascriptreact",
     "typescriptreact",
-    "json"
   },
-  root_dir = lspconfig.util.root_pattern("package.json", "tsconfig.json", ".git"),
-  on_attach = on_attach,
-  capabilities = capabilities,
+  root_dir = function(bufnr, on_dir)
+    local fname = vim.api.nvim_buf_get_name(bufnr)
+    local root = vim.fs.root(fname, { "package.json", "tsconfig.json", ".git" })
+                 or vim.uv.cwd()
+    if root then
+      on_dir(root)
+    end
+  end,
+  init_options = {
+    hostInfo = "neovim",
+    preferences = {
+      importModuleSpecifierPreference = "non-relative",
+    },
+  },
 }

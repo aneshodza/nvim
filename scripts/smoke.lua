@@ -68,41 +68,56 @@ end
 
 check(not vim.tbl_contains(pkgs, "deno"), "stale mason package 'deno' is back")
 
--- keymaps match the golden file, collected exactly as dump.lua collects it
-local maps = lib.keymaps()
-
+-- Keymaps: the golden file is a regression FLOOR, not an exact match.
+--
+-- Asserting equality breaks across Neovim versions for reasons that are not
+-- regressions: 0.12 adds grt/grx as LSP defaults and a set of treesitter
+-- node-selection maps, and reworded [<C-T>. So compare on (mode, lhs) only -
+-- descriptions churn upstream - and fail only on mappings that disappeared.
+-- Additions are printed for review but do not fail the build; scripts/dump.lua
+-- is the tool for inspecting those.
 local golden_path = config_dir .. "/scripts/expected/keymaps.txt"
 
 if vim.fn.filereadable(golden_path) == 1 then
-  local golden = vim.fn.readfile(golden_path)
+  local function lhs_only(lines)
+    local set = {}
 
-  if not vim.deep_equal(maps, golden) then
-    local want, got = {}, {}
-    for _, line in ipairs(golden) do
-      want[line] = true
-    end
-    for _, line in ipairs(maps) do
-      got[line] = true
-    end
+    for _, line in ipairs(lines) do
+      local mode, lhs = line:match "^([^\t]*)\t([^\t]*)"
 
-    local missing, extra = {}, {}
-    for _, line in ipairs(golden) do
-      if not got[line] then
-        missing[#missing + 1] = line
-      end
-    end
-    for _, line in ipairs(maps) do
-      if not want[line] then
-        extra[#extra + 1] = line
+      if mode then
+        set[mode .. "\t" .. lhs] = true
       end
     end
 
-    check(
-      false,
-      ("keymap drift (regenerate with scripts/dump.lua)\n  missing: %s\n  extra: %s"):format(
-        table.concat(missing, " | "),
-        table.concat(extra, " | ")
-      )
+    return set
+  end
+
+  local want = lhs_only(vim.fn.readfile(golden_path))
+  local got = lhs_only(lib.keymaps())
+
+  local missing, extra = {}, {}
+
+  for key in pairs(want) do
+    if not got[key] then
+      missing[#missing + 1] = key
+    end
+  end
+
+  for key in pairs(got) do
+    if not want[key] then
+      extra[#extra + 1] = key
+    end
+  end
+
+  table.sort(missing)
+  table.sort(extra)
+
+  check(#missing == 0, "keymaps lost:\n  " .. table.concat(missing, "\n  "))
+
+  if #extra > 0 then
+    io.stdout:write(
+      "note: " .. #extra .. " new keymap(s) not in the golden file:\n  " .. table.concat(extra, "\n  ") .. "\n"
     )
   end
 else

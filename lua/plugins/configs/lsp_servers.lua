@@ -16,7 +16,22 @@ for _, file in ipairs(files) do
         capabilities = common.capabilities,
       }, opts or {})
 
-      -- 3. Configure and enable the server
+      -- 3. Keep nvim-lspconfig's own on_attach instead of replacing it - that's
+      -- where servers register their user commands (:LspPyrightOrganizeImports,
+      -- :LspPyrightSetPythonPath, ...). Reading vim.lsp.config[name] resolves
+      -- lsp/<name>.lua from the runtimepath; it must happen before we write.
+      local default_on_attach = (vim.lsp.config[server_name] or {}).on_attach
+
+      if default_on_attach then
+        local own_on_attach = final_opts.on_attach
+
+        final_opts.on_attach = function(client, bufnr)
+          default_on_attach(client, bufnr)
+          own_on_attach(client, bufnr)
+        end
+      end
+
+      -- 4. Configure and enable the server
       vim.lsp.config(server_name, final_opts)
       vim.lsp.enable(server_name)
     end

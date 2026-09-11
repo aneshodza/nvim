@@ -1,6 +1,8 @@
 local options = {
   ensure_installed = {
     "lua-language-server",
+    "basedpyright",
+    "python-lsp-server",
     "stylua",
     "css-lsp",
     "html-lsp",

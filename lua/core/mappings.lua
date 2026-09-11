@@ -312,7 +312,7 @@ M.lspconfig = {
 
     ["<leader>fi"] = {
       function()
-        vim.lsp.buf.code_action()
+        require("plugins.configs.lspconfig").code_action()
       end,
       "Code actions / autofix",
     },

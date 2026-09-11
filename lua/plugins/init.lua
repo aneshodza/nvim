@@ -1,5 +1,3 @@
-local os_check = require "core.os_check"
-
 local plugins = {
 
   "nvim-lua/plenary.nvim",
@@ -65,7 +63,6 @@ local plugins = {
       return require("plugins.configs.others").blankline
     end,
     config = function(_, opts)
-      require("core.utils").load_mappings "blankline"
       dofile(vim.g.base46_cache .. "blankline")
       
       require("ibl").setup(opts)
@@ -253,6 +250,7 @@ local plugins = {
 
   {
     "nvim-pack/nvim-spectre",
+    cmd = "Spectre",
     dependencies = {
       "nvim-lua/plenary.nvim",
     },
@@ -297,9 +295,6 @@ local plugins = {
       { "gb", mode = { "n", "o" }, desc = "Comment toggle blockwise" },
       { "gb", mode = "x", desc = "Comment toggle blockwise (visual)" },
     },
-    init = function()
-      require("core.utils").load_mappings "comment"
-    end,
     config = function(_, opts)
       require("Comment").setup(opts)
     end,
@@ -309,9 +304,6 @@ local plugins = {
   {
     "nvim-tree/nvim-tree.lua",
     cmd = { "NvimTreeToggle", "NvimTreeFocus" },
-    init = function()
-      require("core.utils").load_mappings "nvimtree"
-    end,
     opts = function()
       return require "plugins.configs.nvimtree"
     end,
@@ -361,14 +353,6 @@ local plugins = {
     opts = function()
       return require("plugins.configs.copilot")
     end
-  },
-
-  {
-    "zbirenbaum/copilot-cmp",
-    after = "nvim-cmp",
-    config = function()
-      require("copilot_cmp").setup()
-    end,
   },
 
   {

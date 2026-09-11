@@ -1,0 +1,90 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: JohnnyMorganz/stylua-action@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          version: latest
+          args: --check .
+
+  smoke:
+    runs-on: macos-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        # the version in use, and the one we are moving to
+        nvim: [v0.11.1, v0.12.5]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: rhysd/action-setup-vim@v1
+        with:
+          neovim: true
+          version: ${{ matrix.nvim }}
+
+      - name: Link the checkout as the nvim config
+        run: |
+          mkdir -p "$HOME/.config"
+          ln -s "$GITHUB_WORKSPACE" "$HOME/.config/nvim"
+
+      # Pure-Lua gate: parses every file, enforces the structural invariants and
+      # unit-tests utils.pyvenv. Needs no plugins, so it fails in ~2s rather
+      # than after a full install.
+      - name: Load check
+        run: nvim --headless -l scripts/checkload.lua
+
+      - uses: actions/cache@v4
+        with:
+          # Wide on purpose: NvChad dofile()s the compiled base46 cache out of
+          # ~/.local/share/nvim/base46, which is not inside lazy/.
+          path: |
+            ~/.local/share/nvim
+            ~/.cache/nvim
+          key: nvim-${{ runner.os }}-${{ matrix.nvim }}-${{ hashFiles('lazy-lock.json') }}
+          restore-keys: |
+            nvim-${{ runner.os }}-${{ matrix.nvim }}-
+
+      # `restore` honours lazy-lock.json; `sync` would update to latest and make
+      # CI non-deterministic. The exit code is meaningless here - headless nvim
+      # exits 0 regardless - and on a cold cache this legitimately fails at the
+      # base46 dofile before lazy has cloned anything. smoke.lua is the authority.
+      - name: Install plugins at locked revisions
+        run: nvim --headless -u init.lua "+Lazy! restore" +qa || true
+
+      # Boots the real config and asserts on the result. Runs before the
+      # lockfile check so a version nit can never mask a real failure.
+      - name: Smoke
+        run: nvim --headless -l scripts/smoke.lua
+
+      - name: Plugins match the lockfile
+        run: |
+          # lazy.nvim is excluded on purpose: init.lua bootstraps it with
+          # `git clone --branch=stable` before the lockfile can be read, so its
+          # own entry legitimately tracks whatever stable currently is. Every
+          # other plugin must match what Lazy! restore checked out.
+          git diff -- lazy-lock.json \
+            | grep -E '^[+-]  "' \
+            | grep -v '"lazy\.nvim"' > /tmp/drift || true
+
+          if [ -s /tmp/drift ]; then
+            echo "::error::plugins drifted from lazy-lock.json"
+            cat /tmp/drift
+            exit 1
+          fi
+
+          echo "no drift"

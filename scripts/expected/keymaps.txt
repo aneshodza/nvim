@@ -1,0 +1,233 @@
+i	<C-B>	move beginning of line
+i	<C-E>	move end of line
+i	<C-G>S	Add a surrounding pair around the cursor, on new lines (insert mode)
+i	<C-G>s	Add a surrounding pair around the cursor (insert mode)
+i	<C-H>	move left
+i	<C-J>	move down
+i	<C-K>	move up
+i	<C-L>	move right
+i	<C-S>	vim.lsp.buf.signature_help()
+i	<C-U>	:help i_CTRL-U-default
+i	<C-W>	:help i_CTRL-W-default
+i	<CR>	autopairs completion confirm
+i	<Plug>(nvim-surround-insert)	Add a surrounding pair around the cursor (insert mode)
+i	<Plug>(nvim-surround-insert-line)	Add a surrounding pair around the cursor, on new lines (insert mode)
+i	<Plug>luasnip-delete-check	LuaSnip: Removes current snippet from jumplist
+i	<Plug>luasnip-expand-or-jump	LuaSnip: Expand or jump in the current snippet
+i	<Plug>luasnip-expand-repeat	LuaSnip: Repeat last node expansion
+i	<Plug>luasnip-expand-snippet	LuaSnip: Expand the current snippet
+i	<Plug>luasnip-jump-next	LuaSnip: Jump to the next node
+i	<Plug>luasnip-jump-prev	LuaSnip: Jump to the previous node
+i	<Plug>luasnip-next-choice	LuaSnip: Change to the next choice from the choiceNode
+i	<Plug>luasnip-prev-choice	LuaSnip: Change to the previous choice from the choiceNode
+i	<S-Tab>	vim.snippet.jump if active, otherwise <S-Tab>
+i	<SNR>_EunuchNewLine	
+i	<Tab>	vim.snippet.jump if active, otherwise <Tab>
+n	 /	toggle comment
+n	 b	buffer new
+n	 ch	toggle nvcheatsheet
+n	 cm	telescope git commits
+n	 dc	Copy diagnostic to clipboard
+n	 de	Dotnet errors to quickfix
+n	 df	Floating diagnostic
+n	 dl	Diagnostics to loclist
+n	 dn	Next diagnostic
+n	 dp	Prev diagnostic
+n	 ds	LSP diagnostic loclist
+n	 e	nvimtree focus window
+n	 fa	Find all
+n	 fb	telescope find buffers
+n	 ff	telescope find files
+n	 fh	telescope help page
+n	 fm	general format file
+n	 fo	telescope find oldfiles
+n	 fw	telescope live grep
+n	 fz	telescope find in current buffer
+n	 gD	Toggle deleted
+n	 gb	Blame line
+n	 gc	Git conflicts to quickfix
+n	 gt	telescope git status
+n	 h	Split horizontal
+n	 ma	telescope find marks
+n	 mp	Preview markdown
+n	 n	toggle line number
+n	 ph	Preview hunk
+n	 pt	telescope pick hidden term
+n	 rh	Reset hunk
+n	 rhc	Resize horizontal custom
+n	 rhl	Resize horizontal -10
+n	 rhm	Resize horizontal +10
+n	 rhs	Resize horizontal to be small (15)
+n	 rn	toggle relative number
+n	 rp	Replace word
+n	 rvc	Resize vertical custom
+n	 rvl	Resize vertical -10
+n	 rvm	Resize vertical +10
+n	 rvs	Resize vertical to be small (15)
+n	 sa	Show aerial (symbols outline)
+n	 sh	Split horizontal
+n	 sl	Surround line
+n	 sv	Split vertical
+n	 sw	Surround word
+n	 td	Search TODOs
+n	 th	telescope nvchad themes
+n	 ts	New horizontal term
+n	 tv	New vertical term
+n	 v	Split vertical
+n	 wK	whichkey all keymaps
+n	 wk	whichkey query lookup
+n	 x	buffer close
+n	&	:help &-default
+n	<C-C>	general copy whole file
+n	<C-Down>	Move line down
+n	<C-H>	switch window left
+n	<C-J>	switch window down
+n	<C-K>	switch window up
+n	<C-L>	switch window right
+n	<C-N>	nvimtree toggle window
+n	<C-S>	general save file
+n	<C-Up>	Move line up
+n	<C-W><C-D>	Show diagnostics under the cursor
+n	<C-W>d	Show diagnostics under the cursor
+n	<Down>	Move down
+n	<Esc>	general clear highlights
+n	<M-h>	terminal toggleable horizontal term
+n	<M-i>	terminal toggle floating term
+n	<M-v>	terminal toggleable vertical term
+n	<Plug>(comment_toggle_blockwise)	Comment toggle blockwise
+n	<Plug>(comment_toggle_blockwise_count)	Comment toggle blockwise with count
+n	<Plug>(comment_toggle_blockwise_current)	Comment toggle current block
+n	<Plug>(comment_toggle_linewise)	Comment toggle linewise
+n	<Plug>(comment_toggle_linewise_count)	Comment toggle linewise with count
+n	<Plug>(comment_toggle_linewise_current)	Comment toggle current line
+n	<Plug>(nvim-surround-change)	Change a surrounding pair
+n	<Plug>(nvim-surround-change-line)	Change a surrounding pair, putting replacements on new lines
+n	<Plug>(nvim-surround-delete)	Delete a surrounding pair
+n	<Plug>(nvim-surround-normal)	Add a surrounding pair around a motion (normal mode)
+n	<Plug>(nvim-surround-normal-cur)	Add a surrounding pair around the current line (normal mode)
+n	<Plug>(nvim-surround-normal-cur-line)	Add a surrounding pair around the current line, on new lines (normal mode)
+n	<Plug>(nvim-surround-normal-line)	Add a surrounding pair around a motion, on new lines (normal mode)
+n	<Plug>PlenaryTestFile	
+n	<Plug>luasnip-delete-check	LuaSnip: Removes current snippet from jumplist
+n	<Plug>luasnip-expand-repeat	LuaSnip: Repeat last node expansion
+n	<S-Tab>	buffer goto prev
+n	<Tab>	buffer goto next
+n	<Up>	Move up
+n	Y	:help Y-default
+n	[ 	Add empty line above cursor
+n	[<C-L>	:lpfile
+n	[<C-Q>	:cpfile
+n	[<C-T>	 :ptprevious
+n	[A	:rewind
+n	[B	:brewind
+n	[D	Jump to the first diagnostic in the current buffer
+n	[L	:lrewind
+n	[Q	:crewind
+n	[T	:trewind
+n	[a	:previous
+n	[b	:bprevious
+n	[c	Jump to prev hunk
+n	[d	Jump to the previous diagnostic in the current buffer
+n	[l	:lprevious
+n	[q	:cprevious
+n	[t	:tprevious
+n	] 	Add empty line below cursor
+n	]<C-L>	:lnfile
+n	]<C-Q>	:cnfile
+n	]<C-T>	:ptnext
+n	]A	:last
+n	]B	:blast
+n	]D	Jump to the last diagnostic in the current buffer
+n	]L	:llast
+n	]Q	:clast
+n	]T	:tlast
+n	]a	:next
+n	]b	:bnext
+n	]c	Jump to next hunk
+n	]d	Jump to the next diagnostic in the current buffer
+n	]l	:lnext
+n	]q	:cnext
+n	]t	:tnext
+n	cS	Change a surrounding pair, putting replacements on new lines
+n	cs	Change a surrounding pair
+n	ds	Delete a surrounding pair
+n	gO	vim.lsp.buf.document_symbol()
+n	gb	Comment toggle blockwise
+n	gbc	Comment toggle current block
+n	gc	Comment toggle linewise
+n	gcA	Comment insert end of line
+n	gcO	Comment insert above
+n	gcc	Comment toggle current line
+n	gco	Comment insert below
+n	gra	vim.lsp.buf.code_action()
+n	gri	vim.lsp.buf.implementation()
+n	grn	vim.lsp.buf.rename()
+n	grr	vim.lsp.buf.references()
+n	gx	Opens filepath or URI under cursor with the system handler (file explorer, web browser, …)
+n	j	Move down
+n	k	Move up
+n	yS	Add a surrounding pair around a motion, on new lines (normal mode)
+n	ySS	Add a surrounding pair around the current line, on new lines (normal mode)
+n	ys	Add a surrounding pair around a motion (normal mode)
+n	yss	Add a surrounding pair around the current line (normal mode)
+t	<C-X>	terminal escape terminal mode
+t	<M-h>	terminal toggleable horizontal term
+t	<M-i>	terminal toggle floating term
+t	<M-v>	terminal toggleable vertical term
+v	 /	toggle comment
+v	 fm	general format file
+v	#	:help v_#-default
+v	*	:help v_star-default
+v	<C-Down>	Move selection down
+v	<C-S>	vim.lsp.buf.signature_help()
+v	<C-Up>	Move selection up
+v	<Down>	Move down
+v	<Plug>(comment_toggle_blockwise_visual)	Comment toggle blockwise (visual)
+v	<Plug>(comment_toggle_linewise_visual)	Comment toggle linewise (visual)
+v	<Plug>(nvim-surround-visual)	Add a surrounding pair around a visual selection
+v	<Plug>(nvim-surround-visual-line)	Add a surrounding pair around a visual selection, on new lines
+v	<Plug>luasnip-expand-or-jump	LuaSnip: Expand or jump in the current snippet
+v	<Plug>luasnip-expand-repeat	LuaSnip: Repeat last node expansion
+v	<Plug>luasnip-expand-snippet	LuaSnip: Expand the current snippet
+v	<Plug>luasnip-jump-next	LuaSnip: Jump to the next node
+v	<Plug>luasnip-jump-prev	LuaSnip: Jump to the previous node
+v	<Plug>luasnip-next-choice	LuaSnip: Change to the next choice from the choiceNode
+v	<Plug>luasnip-prev-choice	LuaSnip: Change to the previous choice from the choiceNode
+v	<S-Tab>	vim.snippet.jump if active, otherwise <S-Tab>
+v	<Tab>	vim.snippet.jump if active, otherwise <Tab>
+v	<Up>	Move up
+v	@	:help v_@-default
+v	Q	:help v_Q-default
+v	S	Add a surrounding pair around a visual selection
+v	gS	Add a surrounding pair around a visual selection, on new lines
+v	gb	Comment toggle blockwise (visual)
+v	gc	Comment toggle linewise (visual)
+v	gra	vim.lsp.buf.code_action()
+v	gx	Opens filepath or URI under cursor with the system handler (file explorer, web browser, …)
+v	j	Move down
+v	k	Move up
+v	p	Dont copy replaced text
+x	 /	toggle comment
+x	 fm	general format file
+x	#	:help v_#-default
+x	*	:help v_star-default
+x	<C-Down>	Move selection down
+x	<C-Up>	Move selection up
+x	<Down>	Move down
+x	<Plug>(comment_toggle_blockwise_visual)	Comment toggle blockwise (visual)
+x	<Plug>(comment_toggle_linewise_visual)	Comment toggle linewise (visual)
+x	<Plug>(nvim-surround-visual)	Add a surrounding pair around a visual selection
+x	<Plug>(nvim-surround-visual-line)	Add a surrounding pair around a visual selection, on new lines
+x	<Plug>luasnip-expand-repeat	LuaSnip: Repeat last node expansion
+x	<Up>	Move up
+x	@	:help v_@-default
+x	Q	:help v_Q-default
+x	S	Add a surrounding pair around a visual selection
+x	gS	Add a surrounding pair around a visual selection, on new lines
+x	gb	Comment toggle blockwise (visual)
+x	gc	Comment toggle linewise (visual)
+x	gra	vim.lsp.buf.code_action()
+x	gx	Opens filepath or URI under cursor with the system handler (file explorer, web browser, …)
+x	j	Move down
+x	k	Move up
+x	p	Dont copy replaced text

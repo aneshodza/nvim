@@ -21,6 +21,12 @@ end
 
 return {
   cmd = function(dispatchers)
+    -- the only hook pylsp cannot start without, so the self-heal can't be
+    -- bypassed by a mason reinstall
+    pcall(function()
+      require("utils.pyvenv").ensure()
+    end)
+
     local site_packages = project_site_packages()
     local env = site_packages and { PYTHONPATH = site_packages } or {}
 

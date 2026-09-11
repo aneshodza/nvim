@@ -84,7 +84,10 @@ section "keymaps"
 local maps = {}
 for _, mode in ipairs { "n", "i", "v", "x", "t" } do
   for _, m in ipairs(vim.api.nvim_get_keymap(mode)) do
-    maps[#maps + 1] = ("%s\t%s\t%s"):format(mode, m.lhs, m.desc or "")
+    -- <SNR>NN_ script ids depend on how many scripts happened to be sourced and
+    -- vary run to run; normalise or every snapshot differs from the last.
+    local lhs = tostring(m.lhs):gsub("<SNR>%d+_", "<SNR>_")
+    maps[#maps + 1] = ("%s\t%s\t%s"):format(mode, lhs, m.desc or "")
   end
 end
 table.sort(maps)

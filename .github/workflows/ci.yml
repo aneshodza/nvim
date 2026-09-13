@@ -88,3 +88,71 @@ jobs:
           fi
 
           echo "no drift"
+
+  # One job per language: does the editor actually wire up for real work?
+  #
+  # Servers are installed natively rather than through mason - the subject under
+  # test is the config's LSP wiring, and native installs are faster and more
+  # deterministic in CI. Both paths resolve the binary from PATH identically.
+  lsp:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        lang: [python, typescript, rust, lua]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: rhysd/action-setup-vim@v1
+        with:
+          neovim: true
+          version: v0.11.1
+
+      - name: Link the checkout as the nvim config
+        run: |
+          mkdir -p "$HOME/.config"
+          ln -s "$GITHUB_WORKSPACE" "$HOME/.config/nvim"
+
+      - uses: actions/cache@v4
+        with:
+          path: |
+            ~/.local/share/nvim
+            ~/.cache/nvim
+          key: lsp-${{ runner.os }}-${{ matrix.lang }}-${{ hashFiles('lazy-lock.json') }}
+          restore-keys: |
+            lsp-${{ runner.os }}-${{ matrix.lang }}-
+
+      - name: Install language servers
+        run: |
+          set -euxo pipefail
+          case "${{ matrix.lang }}" in
+            python)
+              pipx install basedpyright
+              pipx install "python-lsp-server[rope]"
+              ;;
+            typescript)
+              npm install -g typescript typescript-language-server
+              ;;
+            rust)
+              rustup component add rust-analyzer
+              # rustup ships it as a proxy that is not on PATH under that name
+              sudo ln -sf "$(rustup which rust-analyzer)" /usr/local/bin/rust-analyzer
+              ;;
+            lua)
+              LS_VERSION=3.15.0
+              curl -fsSL -o /tmp/lua-ls.tar.gz \
+                "https://github.com/LuaLS/lua-language-server/releases/download/${LS_VERSION}/lua-language-server-${LS_VERSION}-linux-x64.tar.gz"
+              sudo mkdir -p /opt/lua-ls && sudo tar -xzf /tmp/lua-ls.tar.gz -C /opt/lua-ls
+              printf '#!/bin/sh\nexec /opt/lua-ls/bin/lua-language-server "$@"\n' | sudo tee /usr/local/bin/lua-language-server >/dev/null
+              sudo chmod +x /usr/local/bin/lua-language-server
+              ;;
+          esac
+
+      - name: Install plugins at locked revisions
+        run: nvim --headless -u init.lua "+Lazy! restore" +qa || true
+
+      - name: LSP smoke
+        # rust-analyzer indexes the cargo project on first run, which dominates
+        # this job's wall clock; the others finish in well under a minute.
+        timeout-minutes: 12
+        run: nvim --headless -l scripts/lsp_smoke.lua ${{ matrix.lang }}

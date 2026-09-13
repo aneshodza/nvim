@@ -39,8 +39,11 @@ end
 M.drain = drain
 
 --- Boot the config the way a real session would.
+--- @param opts? { force_load?: boolean } force_load defaults to true; pass
+---   false to leave everything lazy so the real trigger path can be exercised.
 --- @return string[] errors ERROR-level notifications raised during startup
-function M.boot()
+function M.boot(opts)
+  opts = opts or {}
   vim.go.loadplugins = true
 
   local errors = {}
@@ -66,15 +69,27 @@ function M.boot()
 
   drain(1500)
 
-  for _, name in ipairs(M.force_load) do
-    pcall(function()
-      require("lazy").load { plugins = { name } }
-    end)
+  if opts.force_load ~= false then
+    for _, name in ipairs(M.force_load) do
+      pcall(function()
+        require("lazy").load { plugins = { name } }
+      end)
+    end
+
+    drain(2000)
   end
 
-  drain(2000)
-
   return errors
+end
+
+--- Make NvChad's `User FilePost` trigger fire.
+---
+--- NvChad gates it on vim.g.ui_entered, which is only ever set from UIEnter -
+--- and UIEnter never fires in headless mode. Without this, opening a file
+--- headlessly never loads nvim-lspconfig, no server is enabled, and no client
+--- ever attaches. Every "LSP works" check has to go through here.
+function M.enter_ui()
+  vim.g.ui_entered = true
 end
 
 --- @return string[] sorted "mode\tlhs\tdesc" lines

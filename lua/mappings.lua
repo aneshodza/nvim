@@ -71,6 +71,11 @@ map(
 )
 map("n", "<leader>td", "<cmd>TodoTelescope<CR>", { desc = "Telescope todo list" })
 
+map("n", "<leader>tf", function()
+  vim.g.disable_autoformat = not vim.g.disable_autoformat
+  vim.notify("Format on save " .. (vim.g.disable_autoformat and "disabled" or "enabled"))
+end, { desc = "Toggle format on save" })
+
 map("n", "<leader>de", require("utils.quickfix").dotnet_build, { desc = "Quickfix dotnet build errors" })
 map("n", "<leader>gc", require("utils.quickfix").git_conflicts, { desc = "Quickfix git conflict markers" })
 
@@ -88,6 +93,7 @@ end, { desc = "Terminal new vertical" })
 -- plugins -------------------------------------------------------------------
 map("n", "<leader>mp", "<cmd>MarkdownPreview<CR>", { desc = "Markdown preview" })
 map("n", "<leader>sa", "<cmd>AerialToggle right<CR>", { desc = "Aerial symbols outline" })
+map("n", "<leader>sr", "<cmd>Spectre<CR>", { desc = "Search and replace in project" })
 map("n", "<leader>sw", "ysiw", { remap = true, desc = "Surround word" })
 map("n", "<leader>sl", "yss", { remap = true, desc = "Surround line" })
 
@@ -112,11 +118,13 @@ map("n", "[c", function()
   return "<Ignore>"
 end, { expr = true, desc = "Git prev hunk" })
 
-map("n", "<leader>rh", function()
+-- <leader>gr, not <leader>rh: the latter is a prefix of <leader>rhm/rhl/rhs/rhc
+-- (the resizes), so every press stalled for timeoutlen before resolving.
+map("n", "<leader>gr", function()
   require("gitsigns").reset_hunk()
 end, { desc = "Git reset hunk" })
 
-map("n", "<leader>ph", function()
+map("n", "<leader>gp", function()
   require("gitsigns").preview_hunk()
 end, { desc = "Git preview hunk" })
 
@@ -161,6 +169,18 @@ map("n", "<leader>dc", function()
 end, { desc = "Diagnostic copy to clipboard" })
 
 map("n", "<leader>dl", vim.diagnostic.setloclist, { desc = "Diagnostic loclist" })
+
+map("n", "<leader>dv", function()
+  local shown = vim.diagnostic.config().virtual_lines
+  vim.diagnostic.config { virtual_lines = not shown and { current_line = true } or false }
+  vim.notify("Diagnostic virtual lines " .. (shown and "off" or "on"))
+end, { desc = "Diagnostic toggle virtual lines" })
+
+map("n", "<leader>dh", function()
+  local enabled = vim.lsp.inlay_hint.is_enabled { bufnr = 0 }
+  vim.lsp.inlay_hint.enable(not enabled, { bufnr = 0 })
+  vim.notify("Inlay hints " .. (enabled and "off" or "on"))
+end, { desc = "Diagnostic toggle inlay hints" })
 
 -- lsp -----------------------------------------------------------------------
 -- Buffer-local, so these replace the old M.lspconfig section. K is deliberately

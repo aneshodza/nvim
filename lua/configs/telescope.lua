@@ -5,7 +5,7 @@
 -- Dropped as redundant: file_sorter, generic_sorter and buffer_previewer_maker
 -- were all explicitly set to telescope's own defaults.
 
-return vim.tbl_deep_extend("force", require "nvchad.configs.telescope", {
+local opts = vim.tbl_deep_extend("force", require "nvchad.configs.telescope", {
   defaults = {
     vimgrep_arguments = {
       "rg",
@@ -40,3 +40,13 @@ return vim.tbl_deep_extend("force", require "nvchad.configs.telescope", {
     preview = { treesitter = true },
   },
 })
+-- NvChad loads everything listed in extensions_list. Only ask for fzf when the
+-- compiled library actually built - telescope raises on a missing extension,
+-- and `make` can fail on a machine without a C compiler.
+local fzf_lib = vim.fn.stdpath "data" .. "/lazy/telescope-fzf-native.nvim/build/libfzf.so"
+
+if vim.fn.filereadable(fzf_lib) == 1 then
+  table.insert(opts.extensions_list, "fzf")
+end
+
+return opts

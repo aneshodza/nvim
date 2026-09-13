@@ -78,6 +78,17 @@ return {
 
   {
     "nvim-telescope/telescope.nvim",
+    dependencies = {
+      {
+        -- Compiled sorter. Telescope's default is pure Lua, which is
+        -- noticeably slower once a repo gets large. `make` needs a C compiler;
+        -- if the build fails telescope falls back to the Lua sorter rather
+        -- than breaking, and configs/telescope.lua only loads the extension
+        -- when it is actually present.
+        "nvim-telescope/telescope-fzf-native.nvim",
+        build = "make",
+      },
+    },
     opts = function()
       return require "configs.telescope"
     end,

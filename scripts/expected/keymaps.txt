@@ -30,10 +30,12 @@ n	 cm	telescope git commits
 n	 dc	Diagnostic copy to clipboard
 n	 de	Quickfix dotnet build errors
 n	 df	Diagnostic float
+n	 dh	Diagnostic toggle inlay hints
 n	 dl	Diagnostic loclist
 n	 dn	Diagnostic next
 n	 dp	Diagnostic prev
 n	 ds	LSP diagnostic loclist
+n	 dv	Diagnostic toggle virtual lines
 n	 e	nvimtree focus window
 n	 fa	Telescope find all
 n	 fb	telescope find buffers
@@ -46,14 +48,14 @@ n	 fz	telescope find in current buffer
 n	 gD	Git toggle deleted
 n	 gb	Git blame line
 n	 gc	Quickfix git conflict markers
+n	 gp	Git preview hunk
+n	 gr	Git reset hunk
 n	 gt	telescope git status
 n	 h	Window split horizontal
 n	 ma	telescope find marks
 n	 mp	Markdown preview
 n	 n	toggle line number
-n	 ph	Git preview hunk
 n	 pt	telescope pick hidden term
-n	 rh	Git reset hunk
 n	 rhc	Window resize horizontal custom
 n	 rhl	Window resize horizontal -10
 n	 rhm	Window resize horizontal +10
@@ -67,9 +69,11 @@ n	 rvs	Window resize vertical small
 n	 sa	Aerial symbols outline
 n	 sh	Window split horizontal
 n	 sl	Surround line
+n	 sr	Search and replace in project
 n	 sv	Window split vertical
 n	 sw	Surround word
 n	 td	Telescope todo list
+n	 tf	Toggle format on save
 n	 th	telescope nvchad themes
 n	 ts	Terminal new horizontal
 n	 tv	Terminal new vertical

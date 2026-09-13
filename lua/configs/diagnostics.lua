@@ -23,6 +23,11 @@ vim.diagnostic.config {
     },
   },
 
+  -- virtual_lines renders the full multi-line message under the cursor line
+  -- instead of truncating it into virtual_text. Scoped to the current line so
+  -- a file full of errors does not turn into a wall of text. Toggle: <leader>dv
+  virtual_lines = { current_line = true },
+
   update_in_insert = false,
   severity_sort = true,
 

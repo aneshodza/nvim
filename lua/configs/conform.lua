@@ -16,11 +16,19 @@ return {
     typescriptreact = { "prettier" },
   },
 
-  format_on_save = {
-    timeout_ms = 3000,
-    -- `lsp_fallback` was deprecated in conform 8. Note the fallback is inert
-    -- anyway: configs/lspconfig.lua disables documentFormattingProvider on
-    -- every client, so a missing formatter is a silent no-op.
-    lsp_format = "fallback",
-  },
+  -- A function rather than a table so <leader>tf can switch it off per session
+  -- or per buffer - useful when editing someone else's file.
+  format_on_save = function(bufnr)
+    if vim.g.disable_autoformat or vim.b[bufnr].disable_autoformat then
+      return
+    end
+
+    return {
+      timeout_ms = 3000,
+      -- `lsp_fallback` was deprecated in conform 8. Note the fallback is inert
+      -- anyway: configs/lspconfig.lua disables documentFormattingProvider on
+      -- every client, so a missing formatter is a silent no-op.
+      lsp_format = "fallback",
+    }
+  end,
 }

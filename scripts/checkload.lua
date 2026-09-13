@@ -106,6 +106,21 @@ check(pyvenv.ensure(tmp) == "ok", "pyvenv.ensure should be idempotent")
 check(vim.fn.readfile(tmp)[2] == "include-system-site-packages = false", "pyvenv rewrote the wrong thing")
 vim.fn.delete(tmp)
 
+-- 6. startup-time thresholds pick the right highlight ------------------------
+local startup = require "utils.startup"
+
+for _, case in ipairs {
+  { ms = 0, want = "StartupTimeOk" },
+  { ms = startup.warn_ms - 1, want = "StartupTimeOk" },
+  { ms = startup.warn_ms, want = "StartupTimeWarn" },
+  { ms = startup.slow_ms - 1, want = "StartupTimeWarn" },
+  { ms = startup.slow_ms, want = "StartupTimeSlow" },
+  { ms = startup.slow_ms * 10, want = "StartupTimeSlow" },
+} do
+  local got = startup.level_for(case.ms).name
+  check(got == case.want, ("startup.level_for(%d) = %s, want %s"):format(case.ms, got, case.want))
+end
+
 -- report --------------------------------------------------------------------
 if #failures > 0 then
   io.stderr:write("\n" .. table.concat(failures, "\n") .. "\n")

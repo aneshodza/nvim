@@ -26,3 +26,21 @@ new_cmd("Q", "wqa <args>", { nargs = "*" })
 new_cmd("S", "suspend", { nargs = "*" })
 new_cmd("T", "NvimTreeToggle <args>", { nargs = "*" })
 new_cmd("C", "NvimTreeCollapse <args>", { nargs = "*" })
+
+-- Startup time, once the UI has settled. VeryLazy fires just after UIEnter,
+-- which is when lazy.nvim finishes computing stats.startuptime.
+local startup = require "utils.startup"
+
+startup.set_highlights()
+
+autocmd("User", {
+  pattern = "VeryLazy",
+  once = true,
+  callback = function()
+    vim.schedule(startup.report)
+  end,
+})
+
+autocmd("ColorScheme", {
+  callback = startup.set_highlights,
+})

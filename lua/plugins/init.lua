@@ -153,8 +153,28 @@ return {
   {
     "akinsho/flutter-tools.nvim",
     ft = { "dart" },
-    dependencies = { "stevearc/dressing.nvim" },
     config = true,
+  },
+
+  {
+    -- Owns vim.ui.select and vim.ui.input. Without it both fall back to the
+    -- command-line prompt, which is what code actions render as.
+    --
+    -- This used to come in as a dressing.nvim dependency of flutter-tools,
+    -- which only worked because flutter-tools was eagerly loaded; dressing is
+    -- archived upstream in favour of this.
+    --
+    -- lazy = false on purpose: it has to be in place before anything calls
+    -- vim.ui.select, and priority puts it ahead of other eager plugins.
+    "folke/snacks.nvim",
+    priority = 1000,
+    lazy = false,
+    opts = {
+      -- picker.ui_select defaults to true, which is what replaces vim.ui.select.
+      -- telescope stays the driver for the <leader>f pickers.
+      picker = { enabled = true },
+      input = { enabled = true },
+    },
   },
 
   {

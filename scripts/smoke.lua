@@ -54,6 +54,22 @@ check(
     .. "(a per-server capabilities table will do this)"
 )
 
+-- vim.ui.select / vim.ui.input must be owned by a plugin rather than falling
+-- back to the command-line prompt. This regressed once already - dressing.nvim
+-- stopped being eagerly loaded and code actions silently became a numbered
+-- list in the message area. No keymap or plugin-set check can see that.
+for _, name in ipairs { "select", "input" } do
+  local info = debug.getinfo(vim.ui[name], "S")
+
+  check(
+    info and info.source:find("snacks", 1, true) ~= nil,
+    ("vim.ui.%s is not owned by snacks, so it falls back to the command line (source: %s)"):format(
+      name,
+      info and info.source or "?"
+    )
+  )
+end
+
 -- conform still routes the filetypes we care about
 local conform = require("conform").formatters_by_ft
 check(conform.cs and conform.cs[1] == "csharpier", "conform lost the cs formatter")

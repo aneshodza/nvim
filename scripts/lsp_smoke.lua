@@ -33,10 +33,15 @@ local SPECS = {
 
   rust = {
     file = "src/main.rs",
-    -- started by rustaceanvim, not by a spec in configs/servers
-    clients = { "rust_analyzer" },
+    -- rustaceanvim starts and names the client itself: "rust-analyzer" with a
+    -- hyphen, not the "rust_analyzer" key nvim-lspconfig would have used.
+    clients = { "rust-analyzer" },
     cursor = { 2, 21 },
-    diagnostic = "mismatched types",
+    -- rust-analyzer's own type check says "expected i32, found &str"; cargo
+    -- check/clippy says "mismatched types". Which one arrives depends on
+    -- whether flycheck has run, and flycheck is on-save only - so accept
+    -- either rather than depending on a save.
+    diagnostic = { "mismatched types", "expected i32", "expected `i32`" },
   },
 
   lua = {
@@ -147,18 +152,21 @@ end, 250)
 local diagnostics = vim.diagnostic.get(bufnr)
 check(#diagnostics > 0, "no diagnostics produced for the seeded error")
 
+local wanted = type(spec.diagnostic) == "table" and spec.diagnostic or { spec.diagnostic }
 local matched = false
 
 for _, d in ipairs(diagnostics) do
-  if d.message:lower():find(spec.diagnostic:lower(), 1, true) then
-    matched = true
+  for _, want in ipairs(wanted) do
+    if d.message:lower():find(want:lower(), 1, true) then
+      matched = true
+    end
   end
 end
 
 check(
   matched,
-  ("no diagnostic matching %q; got: %s"):format(
-    spec.diagnostic,
+  ("no diagnostic matching any of %s; got: %s"):format(
+    vim.inspect(wanted),
     vim.inspect(vim.tbl_map(function(d)
       return d.message
     end, diagnostics))

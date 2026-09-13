@@ -131,7 +131,11 @@ jobs:
               pipx install "python-lsp-server[rope]"
               ;;
             typescript)
-              npm install -g typescript typescript-language-server
+              npm install -g typescript-language-server
+              # ts_ls resolves the compiler from the WORKSPACE, not from a
+              # global install: without node_modules it exits with
+              # "Could not find a valid TypeScript installation".
+              npm install --prefix tests/fixtures/typescript
               ;;
             rust)
               rustup component add rust-analyzer

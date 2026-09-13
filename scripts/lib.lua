@@ -46,6 +46,12 @@ function M.boot(opts)
   opts = opts or {}
   vim.go.loadplugins = true
 
+  -- `nvim -l` starts with loadplugins = false and never runs
+  -- `filetype plugin indent on`, so ftplugin/ files are never sourced. Plugins
+  -- that start their client from ftplugin rather than an autocmd - rustaceanvim
+  -- is one - then silently never attach. A real session has this on by default.
+  vim.cmd "filetype plugin indent on"
+
   local errors = {}
   local raw_notify = vim.notify
 

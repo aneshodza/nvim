@@ -115,7 +115,12 @@ return {
         server = {
           default_settings = {
             ["rust-analyzer"] = {
-              checkOnSave = { command = "clippy" },
+              -- checkOnSave is a boolean; the command moved to check.command.
+              -- The old `checkOnSave = { command = "clippy" }` made
+              -- rust-analyzer log "invalid type: map, expected a boolean" and
+              -- fall back to cargo check, so clippy-on-save was never running.
+              checkOnSave = true,
+              check = { command = "clippy" },
             },
           },
         },

@@ -17,6 +17,25 @@ return {
     skip = { "solargraph" },
   },
 
+  cheatsheet = {
+    -- The heading is the first word of each mapping's desc, so these hide
+    -- entries that are plumbing rather than shortcuts. The first four are
+    -- NvChad's own defaults - this list replaces rather than extends them.
+    excluded_groups = {
+      "terminal (t)",
+      "autopairs",
+      "Nvim",
+      "Opens",
+
+      -- These must match the RAW first word of the desc: NvChad checks the
+      -- exclusion list before capitalising the heading.
+      "which-key-trigger",
+      "vim.snippet.jump",
+      "LuaSnip:",
+      "Dont",
+    },
+  },
+
   nvdash = {
     -- upstream defaults this to false
     load_on_startup = true,

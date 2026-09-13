@@ -17,23 +17,23 @@ map(
   "n",
   "<leader>rp",
   ":lua local search = vim.fn.input('Search for: '); local replace = vim.fn.input('Replace with: '); vim.fn.feedkeys(':%s#' .. search .. '#' .. replace .. '#gi')<CR>",
-  { desc = "Replace word" }
+  { desc = "Replace word in buffer" }
 )
 
-map("n", "<leader>rhm", "<cmd>horizontal resize +10<CR>", { desc = "Resize horizontal +10" })
-map("n", "<leader>rhl", "<cmd>horizontal resize -10<CR>", { desc = "Resize horizontal -10" })
-map("n", "<leader>rhs", "<cmd>horizontal resize 15<CR>", { desc = "Resize horizontal to be small (15)" })
-map("n", "<leader>rhc", "<cmd>horizontal resize ", { desc = "Resize horizontal custom" })
+map("n", "<leader>rhm", "<cmd>horizontal resize +10<CR>", { desc = "Window resize horizontal +10" })
+map("n", "<leader>rhl", "<cmd>horizontal resize -10<CR>", { desc = "Window resize horizontal -10" })
+map("n", "<leader>rhs", "<cmd>horizontal resize 15<CR>", { desc = "Window resize horizontal small" })
+map("n", "<leader>rhc", "<cmd>horizontal resize ", { desc = "Window resize horizontal custom" })
 
-map("n", "<leader>rvm", "<cmd>vertical resize +10<CR>", { desc = "Resize vertical +10" })
-map("n", "<leader>rvl", "<cmd>vertical resize -10<CR>", { desc = "Resize vertical -10" })
-map("n", "<leader>rvs", "<cmd>vertical resize 15<CR>", { desc = "Resize vertical to be small (15)" })
-map("n", "<leader>rvc", "<cmd>vertical resize ", { desc = "Resize vertical custom" })
+map("n", "<leader>rvm", "<cmd>vertical resize +10<CR>", { desc = "Window resize vertical +10" })
+map("n", "<leader>rvl", "<cmd>vertical resize -10<CR>", { desc = "Window resize vertical -10" })
+map("n", "<leader>rvs", "<cmd>vertical resize 15<CR>", { desc = "Window resize vertical small" })
+map("n", "<leader>rvc", "<cmd>vertical resize ", { desc = "Window resize vertical custom" })
 
-map("n", "<leader>sh", "<cmd>split<CR>", { desc = "Split horizontal" })
-map("n", "<leader>sv", "<cmd>vsplit<CR>", { desc = "Split vertical" })
-map("n", "<leader>h", "<cmd>split<CR>", { desc = "Split horizontal" })
-map("n", "<leader>v", "<cmd>vsplit<CR>", { desc = "Split vertical" })
+map("n", "<leader>sh", "<cmd>split<CR>", { desc = "Window split horizontal" })
+map("n", "<leader>sv", "<cmd>vsplit<CR>", { desc = "Window split vertical" })
+map("n", "<leader>h", "<cmd>split<CR>", { desc = "Window split horizontal" })
+map("n", "<leader>v", "<cmd>vsplit<CR>", { desc = "Window split vertical" })
 
 map("n", "<C-Up>", ":m .-2<CR>==", { desc = "Move line up" })
 map("n", "<C-Down>", ":m .+1<CR>==", { desc = "Move line down" })
@@ -63,26 +63,31 @@ map("x", "p", 'p:let @+=@0<CR>:let @"=@0<CR>', { silent = true, desc = "Dont cop
 map("x", "<C-Up>", ":move '<-2<CR>gv=gv", { silent = true, desc = "Move selection up" })
 map("x", "<C-Down>", ":move '>+1<CR>gv=gv", { silent = true, desc = "Move selection down" })
 
-map("n", "<leader>fa", "<cmd>Telescope find_files follow=true no_ignore=true hidden=true<CR>", { desc = "Find all" })
-map("n", "<leader>td", "<cmd>TodoTelescope<CR>", { desc = "Search TODOs" })
+map(
+  "n",
+  "<leader>fa",
+  "<cmd>Telescope find_files follow=true no_ignore=true hidden=true<CR>",
+  { desc = "Telescope find all" }
+)
+map("n", "<leader>td", "<cmd>TodoTelescope<CR>", { desc = "Telescope todo list" })
 
-map("n", "<leader>de", require("utils.quickfix").dotnet_build, { desc = "Dotnet errors to quickfix" })
-map("n", "<leader>gc", require("utils.quickfix").git_conflicts, { desc = "Git conflicts to quickfix" })
+map("n", "<leader>de", require("utils.quickfix").dotnet_build, { desc = "Quickfix dotnet build errors" })
+map("n", "<leader>gc", require("utils.quickfix").git_conflicts, { desc = "Quickfix git conflict markers" })
 
 -- terminals -----------------------------------------------------------------
 -- <A-i>/<A-h>/<A-v> toggles come from NvChad. These open *new* terminals, and
 -- moved off <leader>th (which is NvChad's theme picker) and <leader>h.
 map("n", "<leader>ts", function()
   require("nvchad.term").new { pos = "sp" }
-end, { desc = "New horizontal term" })
+end, { desc = "Terminal new horizontal" })
 
 map("n", "<leader>tv", function()
   require("nvchad.term").new { pos = "vsp" }
-end, { desc = "New vertical term" })
+end, { desc = "Terminal new vertical" })
 
 -- plugins -------------------------------------------------------------------
-map("n", "<leader>mp", "<cmd>MarkdownPreview<CR>", { desc = "Preview markdown" })
-map("n", "<leader>sa", "<cmd>AerialToggle right<CR>", { desc = "Show aerial (symbols outline)" })
+map("n", "<leader>mp", "<cmd>MarkdownPreview<CR>", { desc = "Markdown preview" })
+map("n", "<leader>sa", "<cmd>AerialToggle right<CR>", { desc = "Aerial symbols outline" })
 map("n", "<leader>sw", "ysiw", { remap = true, desc = "Surround word" })
 map("n", "<leader>sl", "yss", { remap = true, desc = "Surround line" })
 
@@ -95,7 +100,7 @@ map("n", "]c", function()
     require("gitsigns").next_hunk()
   end)
   return "<Ignore>"
-end, { expr = true, desc = "Jump to next hunk" })
+end, { expr = true, desc = "Git next hunk" })
 
 map("n", "[c", function()
   if vim.wo.diff then
@@ -105,39 +110,39 @@ map("n", "[c", function()
     require("gitsigns").prev_hunk()
   end)
   return "<Ignore>"
-end, { expr = true, desc = "Jump to prev hunk" })
+end, { expr = true, desc = "Git prev hunk" })
 
 map("n", "<leader>rh", function()
   require("gitsigns").reset_hunk()
-end, { desc = "Reset hunk" })
+end, { desc = "Git reset hunk" })
 
 map("n", "<leader>ph", function()
   require("gitsigns").preview_hunk()
-end, { desc = "Preview hunk" })
+end, { desc = "Git preview hunk" })
 
 -- was package.loaded.gitsigns.blame_line(), which nil-indexes before gitsigns loads
 map("n", "<leader>gb", function()
   require("gitsigns").blame_line()
-end, { desc = "Blame line" })
+end, { desc = "Git blame line" })
 
 -- moved off <leader>td, which collided with TodoTelescope
 map("n", "<leader>gD", function()
   require("gitsigns").toggle_deleted()
-end, { desc = "Toggle deleted" })
+end, { desc = "Git toggle deleted" })
 
 -- diagnostics ---------------------------------------------------------------
 -- global rather than buffer-local: vim.diagnostic works with no client attached
 map("n", "<leader>df", function()
   vim.diagnostic.open_float { border = "rounded" }
-end, { desc = "Floating diagnostic" })
+end, { desc = "Diagnostic float" })
 
 map("n", "<leader>dp", function()
   vim.diagnostic.jump { count = -1, float = true }
-end, { desc = "Prev diagnostic" })
+end, { desc = "Diagnostic prev" })
 
 map("n", "<leader>dn", function()
   vim.diagnostic.jump { count = 1, float = true }
-end, { desc = "Next diagnostic" })
+end, { desc = "Diagnostic next" })
 
 map("n", "<leader>dc", function()
   local diagnostics = vim.diagnostic.get(0, { lnum = vim.api.nvim_win_get_cursor(0)[1] - 1 })
@@ -153,9 +158,9 @@ map("n", "<leader>dc", function()
 
   vim.fn.setreg("+", table.concat(messages, "\n"))
   vim.notify("Copied " .. #diagnostics .. " diagnostic(s)")
-end, { desc = "Copy diagnostic to clipboard" })
+end, { desc = "Diagnostic copy to clipboard" })
 
-map("n", "<leader>dl", vim.diagnostic.setloclist, { desc = "Diagnostics to loclist" })
+map("n", "<leader>dl", vim.diagnostic.setloclist, { desc = "Diagnostic loclist" })
 
 -- lsp -----------------------------------------------------------------------
 -- Buffer-local, so these replace the old M.lspconfig section. K is deliberately
@@ -171,21 +176,22 @@ vim.api.nvim_create_autocmd("LspAttach", {
 
     map("n", "gd", vim.lsp.buf.definition, opts "LSP definition")
     map("n", "gD", vim.lsp.buf.declaration, opts "LSP declaration")
-    map("n", "<leader>gd", vim.lsp.buf.definition, opts "Get definition")
-    map("n", "<leader>gi", vim.lsp.buf.implementation, opts "Get implementation")
+    map("n", "<leader>gd", vim.lsp.buf.definition, opts "LSP definition (leader)")
+    map("n", "<leader>gi", vim.lsp.buf.implementation, opts "LSP implementation")
     map("n", "<leader>D", vim.lsp.buf.type_definition, opts "LSP type definition")
     map("n", "<leader>ls", vim.lsp.buf.signature_help, opts "LSP signature help")
 
-    -- <leader>rn is NvChad's relative-number toggle; grn also renames
-    map("n", "<leader>ra", vim.lsp.buf.rename, opts "Rename symbol")
+    -- No <leader>ra here: nvchad.configs.lspconfig already binds it to its own
+    -- renamer popup, and its LspAttach runs after this one so it would win
+    -- anyway. grn is Neovim's built-in rename.
 
     map("n", "<leader>rf", function()
       require("telescope.builtin").lsp_references()
-    end, opts "Show references")
+    end, opts "LSP references")
 
-    map("n", "<leader>fi", require("utils.lsp").code_action, opts "Code actions / autofix")
+    map("n", "<leader>fi", require("utils.lsp").code_action, opts "LSP code action / autofix")
 
-    map("n", "<leader>cl", vim.lsp.codelens.run, opts "Run CodeLens")
-    map("n", "<leader>cL", vim.lsp.codelens.refresh, opts "Refresh CodeLens")
+    map("n", "<leader>cl", vim.lsp.codelens.run, opts "LSP run codelens")
+    map("n", "<leader>cL", vim.lsp.codelens.refresh, opts "LSP refresh codelens")
   end,
 })

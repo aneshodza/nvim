@@ -27,15 +27,15 @@ n	 /	toggle comment
 n	 b	buffer new
 n	 ch	toggle nvcheatsheet
 n	 cm	telescope git commits
-n	 dc	Copy diagnostic to clipboard
-n	 de	Dotnet errors to quickfix
-n	 df	Floating diagnostic
-n	 dl	Diagnostics to loclist
-n	 dn	Next diagnostic
-n	 dp	Prev diagnostic
+n	 dc	Diagnostic copy to clipboard
+n	 de	Quickfix dotnet build errors
+n	 df	Diagnostic float
+n	 dl	Diagnostic loclist
+n	 dn	Diagnostic next
+n	 dp	Diagnostic prev
 n	 ds	LSP diagnostic loclist
 n	 e	nvimtree focus window
-n	 fa	Find all
+n	 fa	Telescope find all
 n	 fb	telescope find buffers
 n	 ff	telescope find files
 n	 fh	telescope help page
@@ -43,37 +43,37 @@ n	 fm	general format file
 n	 fo	telescope find oldfiles
 n	 fw	telescope live grep
 n	 fz	telescope find in current buffer
-n	 gD	Toggle deleted
-n	 gb	Blame line
-n	 gc	Git conflicts to quickfix
+n	 gD	Git toggle deleted
+n	 gb	Git blame line
+n	 gc	Quickfix git conflict markers
 n	 gt	telescope git status
-n	 h	Split horizontal
+n	 h	Window split horizontal
 n	 ma	telescope find marks
-n	 mp	Preview markdown
+n	 mp	Markdown preview
 n	 n	toggle line number
-n	 ph	Preview hunk
+n	 ph	Git preview hunk
 n	 pt	telescope pick hidden term
-n	 rh	Reset hunk
-n	 rhc	Resize horizontal custom
-n	 rhl	Resize horizontal -10
-n	 rhm	Resize horizontal +10
-n	 rhs	Resize horizontal to be small (15)
+n	 rh	Git reset hunk
+n	 rhc	Window resize horizontal custom
+n	 rhl	Window resize horizontal -10
+n	 rhm	Window resize horizontal +10
+n	 rhs	Window resize horizontal small
 n	 rn	toggle relative number
-n	 rp	Replace word
-n	 rvc	Resize vertical custom
-n	 rvl	Resize vertical -10
-n	 rvm	Resize vertical +10
-n	 rvs	Resize vertical to be small (15)
-n	 sa	Show aerial (symbols outline)
-n	 sh	Split horizontal
+n	 rp	Replace word in buffer
+n	 rvc	Window resize vertical custom
+n	 rvl	Window resize vertical -10
+n	 rvm	Window resize vertical +10
+n	 rvs	Window resize vertical small
+n	 sa	Aerial symbols outline
+n	 sh	Window split horizontal
 n	 sl	Surround line
-n	 sv	Split vertical
+n	 sv	Window split vertical
 n	 sw	Surround word
-n	 td	Search TODOs
+n	 td	Telescope todo list
 n	 th	telescope nvchad themes
-n	 ts	New horizontal term
-n	 tv	New vertical term
-n	 v	Split vertical
+n	 ts	Terminal new horizontal
+n	 tv	Terminal new vertical
+n	 v	Window split vertical
 n	 wK	whichkey all keymaps
 n	 wk	whichkey query lookup
 n	 x	buffer close
@@ -126,7 +126,7 @@ n	[Q	:crewind
 n	[T	:trewind
 n	[a	:previous
 n	[b	:bprevious
-n	[c	Jump to prev hunk
+n	[c	Git prev hunk
 n	[d	Jump to the previous diagnostic in the current buffer
 n	[l	:lprevious
 n	[q	:cprevious
@@ -143,7 +143,7 @@ n	]Q	:clast
 n	]T	:tlast
 n	]a	:next
 n	]b	:bnext
-n	]c	Jump to next hunk
+n	]c	Git next hunk
 n	]d	Jump to the next diagnostic in the current buffer
 n	]l	:lnext
 n	]q	:cnext

@@ -1,0 +1,162 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: JohnnyMorganz/stylua-action@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          version: latest
+          args: --check .
+
+  smoke:
+    runs-on: macos-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        # the version in use, and the one we are moving to
+        nvim: [v0.11.1, v0.12.5]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: rhysd/action-setup-vim@v1
+        with:
+          neovim: true
+          version: ${{ matrix.nvim }}
+
+      - name: Link the checkout as the nvim config
+        run: |
+          mkdir -p "$HOME/.config"
+          ln -s "$GITHUB_WORKSPACE" "$HOME/.config/nvim"
+
+      # Pure-Lua gate: parses every file, enforces the structural invariants and
+      # unit-tests utils.pyvenv. Needs no plugins, so it fails in ~2s rather
+      # than after a full install.
+      - name: Load check
+        run: nvim --headless -l scripts/checkload.lua
+
+      - uses: actions/cache@v4
+        with:
+          # Wide on purpose: NvChad dofile()s the compiled base46 cache out of
+          # ~/.local/share/nvim/base46, which is not inside lazy/.
+          path: |
+            ~/.local/share/nvim
+            ~/.cache/nvim
+          key: nvim-${{ runner.os }}-${{ matrix.nvim }}-${{ hashFiles('lazy-lock.json') }}
+          restore-keys: |
+            nvim-${{ runner.os }}-${{ matrix.nvim }}-
+
+      # `restore` honours lazy-lock.json; `sync` would update to latest and make
+      # CI non-deterministic. The exit code is meaningless here - headless nvim
+      # exits 0 regardless - and on a cold cache this legitimately fails at the
+      # base46 dofile before lazy has cloned anything. smoke.lua is the authority.
+      - name: Install plugins at locked revisions
+        run: nvim --headless -u init.lua "+Lazy! restore" +qa || true
+
+      # Boots the real config and asserts on the result. Runs before the
+      # lockfile check so a version nit can never mask a real failure.
+      - name: Smoke
+        run: nvim --headless -l scripts/smoke.lua
+
+      - name: Plugins match the lockfile
+        run: |
+          # lazy.nvim is excluded on purpose: init.lua bootstraps it with
+          # `git clone --branch=stable` before the lockfile can be read, so its
+          # own entry legitimately tracks whatever stable currently is. Every
+          # other plugin must match what Lazy! restore checked out.
+          git diff -- lazy-lock.json \
+            | grep -E '^[+-]  "' \
+            | grep -v '"lazy\.nvim"' > /tmp/drift || true
+
+          if [ -s /tmp/drift ]; then
+            echo "::error::plugins drifted from lazy-lock.json"
+            cat /tmp/drift
+            exit 1
+          fi
+
+          echo "no drift"
+
+  # One job per language: does the editor actually wire up for real work?
+  #
+  # Servers are installed natively rather than through mason - the subject under
+  # test is the config's LSP wiring, and native installs are faster and more
+  # deterministic in CI. Both paths resolve the binary from PATH identically.
+  lsp:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        lang: [python, typescript, rust, lua]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: rhysd/action-setup-vim@v1
+        with:
+          neovim: true
+          version: v0.11.1
+
+      - name: Link the checkout as the nvim config
+        run: |
+          mkdir -p "$HOME/.config"
+          ln -s "$GITHUB_WORKSPACE" "$HOME/.config/nvim"
+
+      - uses: actions/cache@v4
+        with:
+          path: |
+            ~/.local/share/nvim
+            ~/.cache/nvim
+          key: lsp-${{ runner.os }}-${{ matrix.lang }}-${{ hashFiles('lazy-lock.json') }}
+          restore-keys: |
+            lsp-${{ runner.os }}-${{ matrix.lang }}-
+
+      - name: Install language servers
+        run: |
+          set -euxo pipefail
+          case "${{ matrix.lang }}" in
+            python)
+              pipx install basedpyright
+              pipx install "python-lsp-server[rope]"
+              ;;
+            typescript)
+              npm install -g typescript-language-server
+              # ts_ls resolves the compiler from the WORKSPACE, not from a
+              # global install: without node_modules it exits with
+              # "Could not find a valid TypeScript installation".
+              npm install --prefix tests/fixtures/typescript
+              ;;
+            rust)
+              rustup component add rust-analyzer
+              # rustup ships it as a proxy that is not on PATH under that name
+              sudo ln -sf "$(rustup which rust-analyzer)" /usr/local/bin/rust-analyzer
+              ;;
+            lua)
+              LS_VERSION=3.15.0
+              curl -fsSL -o /tmp/lua-ls.tar.gz \
+                "https://github.com/LuaLS/lua-language-server/releases/download/${LS_VERSION}/lua-language-server-${LS_VERSION}-linux-x64.tar.gz"
+              sudo mkdir -p /opt/lua-ls && sudo tar -xzf /tmp/lua-ls.tar.gz -C /opt/lua-ls
+              printf '#!/bin/sh\nexec /opt/lua-ls/bin/lua-language-server "$@"\n' | sudo tee /usr/local/bin/lua-language-server >/dev/null
+              sudo chmod +x /usr/local/bin/lua-language-server
+              ;;
+          esac
+
+      - name: Install plugins at locked revisions
+        run: nvim --headless -u init.lua "+Lazy! restore" +qa || true
+
+      - name: LSP smoke
+        # rust-analyzer indexes the cargo project on first run, which dominates
+        # this job's wall clock; the others finish in well under a minute.
+        timeout-minutes: 12
+        run: nvim --headless -l scripts/lsp_smoke.lua ${{ matrix.lang }}

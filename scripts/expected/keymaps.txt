@@ -77,6 +77,11 @@ n	 tf	Toggle format on save
 n	 th	telescope nvchad themes
 n	 ts	Terminal new horizontal
 n	 tv	Terminal new vertical
+n	 uva	Uv audit for vulnerabilities
+n	 uvd	Uv direct dependencies
+n	 uvp	Uv environment and interpreter
+n	 uvt	Uv dependency tree
+n	 uvy	Uv sync and restart LSP
 n	 v	Window split vertical
 n	 wK	whichkey all keymaps
 n	 wk	whichkey query lookup

@@ -138,6 +138,22 @@ map("n", "<leader>gD", function()
   require("gitsigns").toggle_deleted()
 end, { desc = "Git toggle deleted" })
 
+-- uv ------------------------------------------------------------------------
+-- Required lazily, so a session that never touches a uv project never loads it.
+for _, entry in ipairs {
+  { "d", "deps", "Uv direct dependencies" },
+  { "p", "env", "Uv environment and interpreter" },
+  { "y", "sync", "Uv sync and restart LSP" },
+  { "a", "audit", "Uv audit for vulnerabilities" },
+  { "t", "tree", "Uv dependency tree" },
+} do
+  local key, fn, desc = entry[1], entry[2], entry[3]
+
+  map("n", "<leader>uv" .. key, function()
+    require("utils.uv")[fn]()
+  end, { desc = desc })
+end
+
 -- diagnostics ---------------------------------------------------------------
 -- global rather than buffer-local: vim.diagnostic works with no client attached
 map("n", "<leader>df", function()

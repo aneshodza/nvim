@@ -22,6 +22,10 @@ autocmd("FileType", {
   end,
 })
 
+new_cmd("DuplicateKeybinds", function()
+  require("utils.keymaps").report()
+end, { desc = "List colliding keybinds for this buffer" })
+
 new_cmd("Q", "wqa <args>", { nargs = "*" })
 new_cmd("S", "suspend", { nargs = "*" })
 new_cmd("T", "NvimTreeToggle <args>", { nargs = "*" })

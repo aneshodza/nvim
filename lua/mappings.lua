@@ -69,7 +69,7 @@ map(
   "<cmd>Telescope find_files follow=true no_ignore=true hidden=true<CR>",
   { desc = "Telescope find all" }
 )
-map("n", "<leader>td", "<cmd>TodoTelescope<CR>", { desc = "Telescope todo list" })
+map("n", "<leader>ft", "<cmd>TodoTelescope<CR>", { desc = "Telescope find todos" })
 
 map("n", "<leader>tf", function()
   vim.g.disable_autoformat = not vim.g.disable_autoformat

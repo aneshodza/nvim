@@ -5,6 +5,8 @@
 
 local M = {}
 
+local float = require "utils.float"
+
 ---------------------------------------------------------------- roots
 
 --- Nearest pyproject.toml going up - in a workspace this is the member.
@@ -112,44 +114,6 @@ local function project_name(file)
   end
 end
 
----------------------------------------------------------------- float
-
-local function open_float(title, lines)
-  local buf = vim.api.nvim_create_buf(false, true)
-  vim.api.nvim_buf_set_lines(buf, 0, -1, false, lines)
-
-  vim.bo[buf].modifiable = false
-  vim.bo[buf].bufhidden = "wipe"
-  vim.bo[buf].filetype = "uvtools"
-
-  local width = 0
-
-  for _, line in ipairs(lines) do
-    width = math.max(width, vim.fn.strdisplaywidth(line))
-  end
-
-  width = math.min(math.max(width + 4, 46), vim.o.columns - 8)
-  local height = math.min(math.max(#lines, 3), vim.o.lines - 8)
-
-  local win = vim.api.nvim_open_win(buf, true, {
-    relative = "editor",
-    width = width,
-    height = height,
-    row = math.floor((vim.o.lines - height) / 2) - 1,
-    col = math.floor((vim.o.columns - width) / 2),
-    style = "minimal",
-    border = "rounded",
-    title = " " .. title .. " ",
-    title_pos = "center",
-  })
-
-  vim.wo[win].wrap = false
-
-  for _, key in ipairs { "q", "<Esc>" } do
-    vim.keymap.set("n", key, "<cmd>close<CR>", { buffer = buf, nowait = true })
-  end
-end
-
 ---------------------------------------------------------------- running uv
 
 --- @param args string[]
@@ -229,7 +193,7 @@ function M.deps()
     section(root .. "/pyproject.toml", "(workspace root)")
   end
 
-  open_float("uv deps", lines)
+  float.open("uv deps", lines)
 end
 
 --- uvp - which interpreter everything actually resolved to.
@@ -275,13 +239,13 @@ function M.env()
     add("lsp root", tostring(bp.root_dir))
   end
 
-  open_float("uv env", lines)
+  float.open("uv env", lines)
 end
 
 --- uvy - sync, then restart the servers so new packages are actually seen.
 function M.sync()
   run({ "sync" }, function(output, failed)
-    open_float(failed and "uv sync (failed)" or "uv sync", output)
+    float.open(failed and "uv sync (failed)" or "uv sync", output)
 
     if not failed then
       -- pyright indexes site-packages once at startup, so a package added by
@@ -295,14 +259,14 @@ end
 --- uva - audit for known vulnerabilities.
 function M.audit()
   run({ "audit" }, function(output)
-    open_float("uv audit", output)
+    float.open("uv audit", output)
   end)
 end
 
 --- uvt - full dependency tree.
 function M.tree()
   run({ "tree" }, function(output)
-    open_float("uv tree", output)
+    float.open("uv tree", output)
   end)
 end
 

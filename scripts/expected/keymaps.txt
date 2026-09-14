@@ -43,6 +43,7 @@ n	 ff	telescope find files
 n	 fh	telescope help page
 n	 fm	general format file
 n	 fo	telescope find oldfiles
+n	 ft	Telescope find todos
 n	 fw	telescope live grep
 n	 fz	telescope find in current buffer
 n	 gD	Git toggle deleted
@@ -72,7 +73,6 @@ n	 sl	Surround line
 n	 sr	Search and replace in project
 n	 sv	Window split vertical
 n	 sw	Surround word
-n	 td	Telescope todo list
 n	 tf	Toggle format on save
 n	 th	telescope nvchad themes
 n	 ts	Terminal new horizontal

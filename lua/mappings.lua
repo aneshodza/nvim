@@ -170,10 +170,10 @@ end, { desc = "Diagnostic copy to clipboard" })
 
 map("n", "<leader>dl", vim.diagnostic.setloclist, { desc = "Diagnostic loclist" })
 
+-- required lazily: configs.diagnostics applies its config on first require, and
+-- it must land after nvchad.configs.lspconfig.defaults() rather than at startup
 map("n", "<leader>dv", function()
-  local shown = vim.diagnostic.config().virtual_lines
-  vim.diagnostic.config { virtual_lines = not shown and { current_line = true } or false }
-  vim.notify("Diagnostic virtual lines " .. (shown and "off" or "on"))
+  require("configs.diagnostics").toggle_virtual_lines()
 end, { desc = "Diagnostic toggle virtual lines" })
 
 map("n", "<leader>dh", function()

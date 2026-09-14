@@ -7,12 +7,24 @@
 
 local severity = vim.diagnostic.severity
 
+local M = {}
+
+-- virtual_text and virtual_lines are mutually exclusive here on purpose.
+-- Neovim's `current_line` option only *filters* to the current line; there is
+-- no "everywhere except the current line", and plain virtual_text is rendered
+-- once with no CursorMoved hook (diagnostic.lua only installs that when
+-- current_line == true). Enabling both therefore draws the same diagnostic
+-- twice on the cursor line. <leader>dv swaps between them.
+M.virtual_text = {
+  prefix = "●",
+  spacing = 4,
+  severity = { min = severity.HINT },
+}
+
+M.virtual_lines = { current_line = true }
+
 vim.diagnostic.config {
-  virtual_text = {
-    prefix = "●",
-    spacing = 4,
-    severity = { min = severity.HINT },
-  },
+  virtual_text = M.virtual_text,
 
   signs = {
     text = {
@@ -23,10 +35,7 @@ vim.diagnostic.config {
     },
   },
 
-  -- virtual_lines renders the full multi-line message under the cursor line
-  -- instead of truncating it into virtual_text. Scoped to the current line so
-  -- a file full of errors does not turn into a wall of text. Toggle: <leader>dv
-  virtual_lines = { current_line = true },
+  virtual_lines = false,
 
   update_in_insert = false,
   severity_sort = true,
@@ -41,3 +50,18 @@ vim.diagnostic.config {
     prefix = "",
   },
 }
+
+--- Swap between compact inline text on every line and the full multi-line
+--- message on the cursor line.
+function M.toggle_virtual_lines()
+  local on = vim.diagnostic.config().virtual_lines ~= false
+
+  vim.diagnostic.config {
+    virtual_lines = not on and M.virtual_lines or false,
+    virtual_text = on and M.virtual_text or false,
+  }
+
+  vim.notify("Diagnostics: " .. (on and "inline text" or "full message on cursor line"))
+end
+
+return M

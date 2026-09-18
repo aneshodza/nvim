@@ -55,9 +55,11 @@ jobs:
           path: |
             ~/.local/share/nvim
             ~/.cache/nvim
+          # No restore-keys on purpose. The key is the lockfile hash, so a
+          # prefix fallback would restore a plugin tree built for a *different*
+          # lockfile and then layer a restore on top - which is the exact state
+          # the drift check exists to catch.
           key: nvim-${{ runner.os }}-${{ matrix.nvim }}-${{ hashFiles('lazy-lock.json') }}
-          restore-keys: |
-            nvim-${{ runner.os }}-${{ matrix.nvim }}-
 
       # `restore` honours lazy-lock.json; `sync` would update to latest and make
       # CI non-deterministic. The exit code is meaningless here - headless nvim
@@ -72,22 +74,7 @@ jobs:
         run: nvim --headless -l scripts/smoke.lua
 
       - name: Plugins match the lockfile
-        run: |
-          # lazy.nvim is excluded on purpose: init.lua bootstraps it with
-          # `git clone --branch=stable` before the lockfile can be read, so its
-          # own entry legitimately tracks whatever stable currently is. Every
-          # other plugin must match what Lazy! restore checked out.
-          git diff -- lazy-lock.json \
-            | grep -E '^[+-]  "' \
-            | grep -v '"lazy\.nvim"' > /tmp/drift || true
-
-          if [ -s /tmp/drift ]; then
-            echo "::error::plugins drifted from lazy-lock.json"
-            cat /tmp/drift
-            exit 1
-          fi
-
-          echo "no drift"
+        run: nvim --headless -l scripts/checklock.lua
 
   # One job per language: does the editor actually wire up for real work?
   #

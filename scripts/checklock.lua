@@ -32,7 +32,10 @@ for name, entry in pairs(pinned) do
       local head = vim.fn.trim(vim.fn.system { "git", "-C", dir, "rev-parse", "HEAD" })
 
       if head ~= entry.commit then
-        table.insert(failures, ("  %-28s locked %s  installed %s"):format(name, entry.commit:sub(1, 10), head:sub(1, 10)))
+        table.insert(
+          failures,
+          ("  %-28s locked %s  installed %s"):format(name, entry.commit:sub(1, 10), head:sub(1, 10))
+        )
       end
     else
       table.insert(failures, ("  %-28s not installed"):format(name))

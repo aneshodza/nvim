@@ -37,6 +37,24 @@ for name, entry in pairs(pinned) do
           ("  %-28s locked %s  installed %s"):format(name, entry.commit:sub(1, 10), head:sub(1, 10))
         )
       end
+
+      -- HEAD alone is not enough. A restore can move HEAD back to the pinned
+      -- commit and leave the working tree holding files from a newer one, so
+      -- the plugin reports as pinned while running different code. That is also
+      -- what makes lazy refuse to update it ("You have local changes in ...").
+      -- Untracked files are ignored: some plugins build artefacts in place.
+      local dirty = vim.fn.systemlist { "git", "-C", dir, "status", "--porcelain", "--untracked-files=no" }
+
+      if #dirty > 0 then
+        table.insert(
+          failures,
+          ("  %-28s %d modified tracked file(s), so it is not really at %s"):format(
+            name,
+            #dirty,
+            entry.commit:sub(1, 10)
+          )
+        )
+      end
     else
       table.insert(failures, ("  %-28s not installed"):format(name))
     end

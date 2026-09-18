@@ -4,5 +4,8 @@ ftplugin
 syntax
 coc-settings.json
 .luarc.json
-lazy-lock.json
 after
+
+# build artifacts from the LSP test fixtures
+tests/fixtures/rust/target/
+tests/fixtures/typescript/node_modules/

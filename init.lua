@@ -1,43 +1,37 @@
-require "core"
+vim.g.base46_cache = vim.fn.stdpath "data" .. "/base46/"
+vim.g.mapleader = " "
 
-local custom_init_path = vim.api.nvim_get_runtime_file("lua/custom/init.lua", false)[1]
-
-if custom_init_path then
-  dofile(custom_init_path)
-end
-
-require("core.utils").load_mappings()
-
+-- bootstrap lazy and all plugins
 local lazypath = vim.fn.stdpath "data" .. "/lazy/lazy.nvim"
 
--- bootstrap lazy.nvim!
-if not vim.loop.fs_stat(lazypath) then
-  require("core.bootstrap").gen_chadrc_template()
-  require("core.bootstrap").lazy(lazypath)
+if not vim.uv.fs_stat(lazypath) then
+  local repo = "https://github.com/folke/lazy.nvim.git"
+  vim.fn.system { "git", "clone", "--filter=blob:none", repo, "--branch=stable", lazypath }
 end
 
-dofile(vim.g.base46_cache .. "defaults")
 vim.opt.rtp:prepend(lazypath)
-require "plugins"
 
--- Add Q shortcut to quit all
-vim.cmd('command! -nargs=* Q wqa <args>')
+local lazy_config = require "configs.lazy"
 
--- Add S shortcut to suspend (just move to background)
-vim.cmd('command! -nargs=* S suspend')
+-- load plugins
+require("lazy").setup({
+  {
+    "NvChad/NvChad",
+    lazy = false,
+    branch = "v2.5",
+    import = "nvchad.plugins",
+  },
 
--- Add T shortcut to toggle Filetree
-vim.cmd('command! -nargs=* T NvimTreeToggle <args>')
+  { import = "plugins" },
+}, lazy_config)
 
--- Add C shortcut to collapse Filetree
-vim.cmd('command! -nargs=* C NvimTreeCollapse <args>')
+-- load theme
+dofile(vim.g.base46_cache .. "defaults")
+dofile(vim.g.base46_cache .. "statusline")
 
--- Set language to English
-vim.o.langmenu = 'en_US.UTF-8'
-vim.cmd('language messages en_US.UTF-8')
+require "options"
+require "autocmds"
 
--- Set environment variables
-vim.env.LANG = 'en_US.UTF-8'
-vim.env.LC_ALL = 'en_US.UTF-8'
-vim.opt.guicursor = ""
-vim.opt.encoding = "UTF-8"
+vim.schedule(function()
+  require "mappings"
+end)

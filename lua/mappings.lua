@@ -71,6 +71,10 @@ map(
 )
 map("n", "<leader>ft", "<cmd>TodoTelescope<CR>", { desc = "Telescope find todos" })
 
+map("n", "<leader>fd", function()
+  require("utils.folders").pick()
+end, { desc = "Telescope find directory" })
+
 map("n", "<leader>tf", function()
   vim.g.disable_autoformat = not vim.g.disable_autoformat
   vim.notify("Format on save " .. (vim.g.disable_autoformat and "disabled" or "enabled"))

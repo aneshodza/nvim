@@ -63,6 +63,7 @@ for _, mod in ipairs {
   "utils.quickfix",
   "utils.lsp",
   "utils.pyvenv",
+  "utils.folders",
   "nvimrc.health",
 } do
   local loaded, err = pcall(require, mod)

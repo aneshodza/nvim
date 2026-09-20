@@ -39,6 +39,7 @@ n	 dv	Diagnostic toggle virtual lines
 n	 e	nvimtree focus window
 n	 fa	Telescope find all
 n	 fb	telescope find buffers
+n	 fd	Telescope find directory
 n	 ff	telescope find files
 n	 fh	telescope help page
 n	 fm	general format file

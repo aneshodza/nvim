@@ -62,7 +62,7 @@ n	 rhc	Window resize horizontal custom
 n	 rhl	Window resize horizontal -10
 n	 rhm	Window resize horizontal +10
 n	 rhs	Window resize horizontal small
-n	 rn	toggle relative number
+n	 rn	LSP rename symbol
 n	 rp	Replace word in buffer
 n	 rvc	Window resize vertical custom
 n	 rvl	Window resize vertical -10

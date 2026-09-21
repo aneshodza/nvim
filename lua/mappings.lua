@@ -30,6 +30,16 @@ map("n", "<leader>rvl", "<cmd>vertical resize -10<CR>", { desc = "Window resize 
 map("n", "<leader>rvs", "<cmd>vertical resize 15<CR>", { desc = "Window resize vertical small" })
 map("n", "<leader>rvc", "<cmd>vertical resize ", { desc = "Window resize vertical custom" })
 
+-- NvChad binds <leader>rn to a relative-number toggle. Claim it for rename
+-- instead: this runs after `require "nvchad.mappings"`, so it wins. Global
+-- rather than buffer-local so it cannot behave differently depending on
+-- whether a language server happens to be attached, which is exactly what made
+-- the old binding feel unpredictable. <leader>ra is NvChad's own alias for the
+-- same renamer.
+map("n", "<leader>rn", function()
+  require "nvchad.lsp.renamer"()
+end, { desc = "LSP rename symbol" })
+
 map("n", "<leader>sh", "<cmd>split<CR>", { desc = "Window split horizontal" })
 map("n", "<leader>sv", "<cmd>vsplit<CR>", { desc = "Window split vertical" })
 map("n", "<leader>h", "<cmd>split<CR>", { desc = "Window split horizontal" })

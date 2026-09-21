@@ -225,9 +225,11 @@ vim.api.nvim_create_autocmd("LspAttach", {
     -- renamer popup, and its LspAttach runs after this one so it would win
     -- anyway. grn is Neovim's built-in rename.
 
-    map("n", "<leader>rf", function()
+    -- <leader>gu, alongside <leader>gd and <leader>gi: "go to usages". grr is
+    -- Neovim's built-in equivalent without the picker.
+    map("n", "<leader>gu", function()
       require("telescope.builtin").lsp_references()
-    end, opts "LSP references")
+    end, opts "LSP usages")
 
     map("n", "<leader>fi", require("utils.lsp").code_action, opts "LSP code action / autofix")
 

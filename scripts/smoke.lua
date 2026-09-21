@@ -75,6 +75,11 @@ local conform = require("conform").formatters_by_ft
 check(conform.cs and conform.cs[1] == "csharpier", "conform lost the cs formatter")
 check(conform.lua and conform.lua[1] == "stylua", "conform lost the lua formatter")
 
+-- Python had no formatter at all for a long time, and because every client has
+-- documentFormattingProvider disabled there was nothing for lsp_format to fall
+-- back to: <leader>fm simply did nothing, silently.
+check(conform.python and #conform.python > 0, "conform has no python formatter, so <leader>fm is a no-op there")
+
 -- mason derives the packages that used to be missing from ensure_installed
 local pkgs = require("nvchad.mason").get_pkgs()
 

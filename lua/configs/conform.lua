@@ -12,6 +12,10 @@ return {
     -- added so CI's stylua --check and format-on-save agree
     lua = { "stylua" },
     markdown = { "prettier" },
+    -- ruff rather than black: it is what uv projects reach for, it is fast, and
+    -- it picks up [tool.ruff] from the project's pyproject.toml. Imports first,
+    -- then formatting.
+    python = { "ruff_organize_imports", "ruff_format" },
     typescript = { "prettier" },
     typescriptreact = { "prettier" },
   },

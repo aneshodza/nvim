@@ -12,7 +12,9 @@ return {
     -- Not derivable: eslint_d comes in through null-ls, stylua only through
     -- conform, and rust-analyzer is driven by rustaceanvim rather than by a
     -- server spec in configs/servers.
-    pkgs = { "eslint_d", "rust-analyzer", "stylua" },
+    -- ruff is listed explicitly because NvChad's name map has no entry for
+    -- conform's ruff_format / ruff_organize_imports, so it cannot derive it.
+    pkgs = { "eslint_d", "ruff", "rust-analyzer", "stylua" },
     -- a ruby gem, not a mason package: gem install solargraph
     skip = { "solargraph" },
   },

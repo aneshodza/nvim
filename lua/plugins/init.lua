@@ -41,6 +41,22 @@ return {
         "yaml",
       },
     },
+
+    -- Without this, `ensure_installed` above is silently discarded.
+    --
+    -- NvChad's spec pins no branch, so lazy clones nvim-treesitter's *default*
+    -- branch, which is still `master` - not the `main` rewrite NvChad's own code
+    -- assumes (nvchad/autocmds.lua's :TSInstallAll calls
+    -- require("nvim-treesitter").install, which exists only on `main`).
+    --
+    -- On master, lua/nvim-treesitter.lua's M.setup() takes NO arguments, so
+    -- lazy's default `require(main).setup(opts)` throws the opts away. The entry
+    -- point that reads ensure_installed is nvim-treesitter.configs.setup.
+    -- Commands and module init come from the plugin's own plugin/ file, which
+    -- lazy sources before this runs, so they must not be repeated here.
+    config = function(_, opts)
+      require("nvim-treesitter.configs").setup(opts)
+    end,
   },
 
   {

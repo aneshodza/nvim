@@ -80,6 +80,33 @@ check(conform.lua and conform.lua[1] == "stylua", "conform lost the lua formatte
 -- back to: <leader>fm simply did nothing, silently.
 check(conform.python and #conform.python > 0, "conform has no python formatter, so <leader>fm is a no-op there")
 
+-- Treesitter's opts actually reached the plugin. NvChad's spec pins no branch,
+-- so lazy clones nvim-treesitter's default branch - `master`, not the `main`
+-- rewrite NvChad's own :TSInstallAll assumes. On master the module-level
+-- setup() takes NO arguments, so lazy's default `require(main).setup(opts)`
+-- silently discarded ensure_installed: 11 of 22 declared parsers were never
+-- installed and Python, Rust, Ruby, C# and YAML fell back to regex
+-- highlighting with no error raised anywhere.
+--
+-- This compares the spec against what configs actually holds. Asserting the
+-- parsers are *compiled* would put the network and a C toolchain in the gate.
+local ts_spec = require("lazy.core.plugin").values(lz.plugins["nvim-treesitter"], "opts", false)
+local ts_registered = {}
+
+for _, lang in ipairs(require("nvim-treesitter.configs").get_ensure_installed_parsers()) do
+  ts_registered[lang] = true
+end
+
+local ts_dropped = {}
+
+for _, lang in ipairs(ts_spec.ensure_installed or {}) do
+  if not ts_registered[lang] then
+    ts_dropped[#ts_dropped + 1] = lang
+  end
+end
+
+check(#ts_dropped == 0, "nvim-treesitter never received these parsers from the spec: " .. table.concat(ts_dropped, " "))
+
 -- mason derives the packages that used to be missing from ensure_installed
 local pkgs = require("nvchad.mason").get_pkgs()
 

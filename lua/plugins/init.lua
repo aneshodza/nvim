@@ -30,6 +30,7 @@ return {
         "html",
         "javascript",
         "json",
+        "jsonnet",
         "markdown",
         "markdown_inline",
         "python",

@@ -152,6 +152,22 @@ map("n", "<leader>gD", function()
   require("gitsigns").toggle_deleted()
 end, { desc = "Git toggle deleted" })
 
+map("n", "<leader>gB", "<cmd>Gitsigns blame<CR>", { desc = "Git blame file" })
+map("n", "<leader>gL", "<cmd>Gitsigns toggle_current_line_blame<CR>", { desc = "Git toggle inline blame" })
+
+-- diffview --------------------------------------------------------------------
+map("n", "<leader>gh", "<cmd>DiffviewFileHistory %<CR>", { desc = "Git file history" })
+map("x", "<leader>gh", ":DiffviewFileHistory<CR>", { desc = "Git line history" })
+map("n", "<leader>gH", "<cmd>DiffviewFileHistory<CR>", { desc = "Git repo history" })
+map("n", "<leader>gv", "<cmd>DiffviewOpen<CR>", { desc = "Git diff working tree" })
+map("n", "<leader>gV", function()
+  vim.ui.input({ prompt = "Compare against (e.g. master...HEAD): " }, function(rev)
+    if rev and rev ~= "" then
+      vim.cmd("DiffviewOpen " .. rev)
+    end
+  end)
+end, { desc = "Git diff against revision" })
+
 -- uv ------------------------------------------------------------------------
 -- Required lazily, so a session that never touches a uv project never loads it.
 for _, entry in ipairs {

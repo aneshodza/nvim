@@ -128,7 +128,19 @@ return {
         changedelete = { text = "~" },
         untracked = { text = "│" },
       },
+      -- GitLens-style inline blame at the end of the current line
+      current_line_blame = true,
+      current_line_blame_opts = { delay = 500 },
+      current_line_blame_formatter = "<author>, <author_time:%R> • <summary>",
     },
+  },
+
+  {
+    -- GitLens' history and compare views: file/line history, branch diffs and
+    -- a three-way merge view for conflicts
+    "sindrets/diffview.nvim",
+    cmd = { "DiffviewOpen", "DiffviewFileHistory", "DiffviewClose" },
+    opts = {},
   },
 
   -------------------------------------------------- extras

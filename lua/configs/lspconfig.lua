@@ -25,6 +25,12 @@ vim.api.nvim_create_autocmd("LspAttach", {
     if client then
       client.server_capabilities.documentFormattingProvider = false
       client.server_capabilities.documentRangeFormattingProvider = false
+
+      -- ruff's hover only explains noqa codes and would compete with
+      -- basedpyright's type hover on the same K press
+      if client.name == "ruff" then
+        client.server_capabilities.hoverProvider = false
+      end
     end
   end,
 })

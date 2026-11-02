@@ -20,6 +20,21 @@ return {
     typescriptreact = { "prettier" },
   },
 
+  -- project-pinned tools come from mise, so saves match pre-commit (see utils/mise.lua)
+  formatters = {
+    -- the project's ruff, else mason's
+    ruff_format = {
+      command = function(_, ctx)
+        return require("utils.mise").which("ruff", ctx.dirname) or "ruff"
+      end,
+    },
+    ruff_organize_imports = {
+      command = function(_, ctx)
+        return require("utils.mise").which("ruff", ctx.dirname) or "ruff"
+      end,
+    },
+  },
+
   -- A function rather than a table so <leader>tf can switch it off per session
   -- or per buffer - useful when editing someone else's file.
   format_on_save = function(bufnr)

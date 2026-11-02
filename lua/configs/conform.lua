@@ -18,6 +18,8 @@ return {
     cpp = { "clang-format" },
     cs = { "csharpier" },
     css = web,
+    -- the project's mise go; plain gofmt (= `go fmt`), as nothing uses goimports
+    go = only_if_available "gofmt",
     html = web,
     htmlangular = { "prettier" },
     javascript = web,
@@ -46,6 +48,14 @@ return {
       end,
       condition = function(_, ctx)
         return require("utils.mise").which("buildifier", ctx.dirname) ~= nil
+      end,
+    },
+    gofmt = {
+      command = function(_, ctx)
+        return require("utils.mise").which("gofmt", ctx.dirname) or "gofmt"
+      end,
+      condition = function(_, ctx)
+        return require("utils.mise").which("gofmt", ctx.dirname) ~= nil
       end,
     },
     -- unavailable unless an .oxfmtrc.json(c) is found upward

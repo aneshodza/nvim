@@ -27,6 +27,8 @@ return {
         "c_sharp",
         "css",
         "dart",
+        "go",
+        "gomod",
         "html",
         "javascript",
         "json",

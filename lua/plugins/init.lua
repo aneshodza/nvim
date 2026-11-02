@@ -36,6 +36,7 @@ return {
         "python",
         "ruby",
         "rust",
+        "starlark",
         "tsx",
         "typescript",
         "yaml",

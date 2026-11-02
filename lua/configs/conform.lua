@@ -11,6 +11,9 @@ end
 
 return {
   formatters_by_ft = {
+    -- the project's mise buildifier (mason's is skipped in chadrc so it can't
+    -- shadow the pinned version pre-commit runs)
+    bzl = only_if_available "buildifier",
     c = { "clang-format" },
     cpp = { "clang-format" },
     cs = { "csharpier" },
@@ -36,6 +39,15 @@ return {
 
   -- project-pinned tools come from mise, so saves match pre-commit (see utils/mise.lua)
   formatters = {
+    -- only where the project pins it; unavailable (and silent) everywhere else
+    buildifier = {
+      command = function(_, ctx)
+        return require("utils.mise").which("buildifier", ctx.dirname) or "buildifier"
+      end,
+      condition = function(_, ctx)
+        return require("utils.mise").which("buildifier", ctx.dirname) ~= nil
+      end,
+    },
     -- unavailable unless an .oxfmtrc.json(c) is found upward
     oxfmt = { require_cwd = true },
     -- the project's ruff, else mason's

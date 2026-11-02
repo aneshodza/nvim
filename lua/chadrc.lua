@@ -14,9 +14,12 @@ return {
     -- server spec in configs/servers.
     -- ruff is listed explicitly because NvChad's name map has no entry for
     -- conform's ruff_format / ruff_organize_imports, so it cannot derive it.
-    pkgs = { "eslint_d", "ruff", "rust-analyzer", "stylua" },
-    -- a ruby gem, not a mason package: gem install solargraph
-    skip = { "solargraph" },
+    -- starpls is missing from the same name map.
+    pkgs = { "eslint_d", "ruff", "rust-analyzer", "starpls", "stylua" },
+    -- solargraph: a ruby gem, not a mason package (gem install solargraph).
+    -- buildifier: comes from the project's mise; mason's bin dir is first on
+    -- PATH, so a mason copy would shadow the version pre-commit pins.
+    skip = { "solargraph", "buildifier" },
   },
 
   cheatsheet = {

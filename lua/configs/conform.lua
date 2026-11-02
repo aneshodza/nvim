@@ -1,27 +1,43 @@
+-- oxfmt where the project has an oxfmt config, prettier everywhere else
+local web = { "oxfmt", "prettier", stop_after_first = true }
+
+-- for formatters only some projects provide: an empty list rather than an
+-- unavailable formatter, which would warn on every save
+local function only_if_available(name)
+  return function(bufnr)
+    return require("conform").get_formatter_info(name, bufnr).available and { name } or {}
+  end
+end
+
 return {
   formatters_by_ft = {
     c = { "clang-format" },
     cpp = { "clang-format" },
     cs = { "csharpier" },
-    css = { "prettier" },
-    html = { "prettier" },
+    css = web,
+    html = web,
     htmlangular = { "prettier" },
-    javascript = { "prettier" },
-    javascriptreact = { "prettier" },
-    json = { "prettier" },
+    javascript = web,
+    javascriptreact = web,
+    json = web,
+    -- oxfmt-only, so projects without an oxfmt config keep not formatting these
+    jsonc = only_if_available "oxfmt",
+    yaml = only_if_available "oxfmt",
     -- added so CI's stylua --check and format-on-save agree
     lua = { "stylua" },
-    markdown = { "prettier" },
+    markdown = web,
     -- ruff rather than black: it is what uv projects reach for, it is fast, and
     -- it picks up [tool.ruff] from the project's pyproject.toml. Imports first,
     -- then formatting.
     python = { "ruff_organize_imports", "ruff_format" },
-    typescript = { "prettier" },
-    typescriptreact = { "prettier" },
+    typescript = web,
+    typescriptreact = web,
   },
 
   -- project-pinned tools come from mise, so saves match pre-commit (see utils/mise.lua)
   formatters = {
+    -- unavailable unless an .oxfmtrc.json(c) is found upward
+    oxfmt = { require_cwd = true },
     -- the project's ruff, else mason's
     ruff_format = {
       command = function(_, ctx)

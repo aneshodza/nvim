@@ -47,7 +47,7 @@ n	 fo	telescope find oldfiles
 n	 ft	Telescope find todos
 n	 fw	telescope live grep
 n	 fz	telescope find in current buffer
-n	 gD	Git toggle deleted
+n	 gD	Git diff working tree (toggle)
 n	 gb	Git blame line
 n	 gc	Quickfix git conflict markers
 n	 gp	Git preview hunk

@@ -129,7 +129,31 @@ return {
     -- a three-way merge view for conflicts
     "sindrets/diffview.nvim",
     cmd = { "DiffviewOpen", "DiffviewFileHistory", "DiffviewClose" },
-    opts = {},
+    opts = function()
+      -- Closing a view runs :tabclose, which lands on the tab to the right, not
+      -- the one the view was opened from. Remember that tab and go back to it.
+      local origin = {}
+
+      return {
+        hooks = {
+          view_opened = function(view)
+            origin[view] = vim.api.nvim_list_tabpages()[vim.fn.tabpagenr "#"]
+          end,
+          view_closed = function(view)
+            local tab = origin[view]
+            origin[view] = nil
+
+            if tab and vim.api.nvim_tabpage_is_valid(tab) then
+              vim.schedule(function()
+                if vim.api.nvim_tabpage_is_valid(tab) then
+                  vim.api.nvim_set_current_tabpage(tab)
+                end
+              end)
+            end
+          end,
+        },
+      }
+    end,
   },
 
   -------------------------------------------------- extras

@@ -148,11 +148,6 @@ map("n", "<leader>gb", function()
   require("gitsigns").blame_line()
 end, { desc = "Git blame line" })
 
--- moved off <leader>td, which collided with TodoTelescope
-map("n", "<leader>gD", function()
-  require("gitsigns").toggle_deleted()
-end, { desc = "Git toggle deleted" })
-
 map("n", "<leader>gB", "<cmd>Gitsigns blame<CR>", { desc = "Git blame file" })
 map("n", "<leader>gL", "<cmd>Gitsigns toggle_current_line_blame<CR>", { desc = "Git toggle inline blame" })
 
@@ -160,7 +155,23 @@ map("n", "<leader>gL", "<cmd>Gitsigns toggle_current_line_blame<CR>", { desc = "
 map("n", "<leader>gh", "<cmd>DiffviewFileHistory %<CR>", { desc = "Git file history" })
 map("x", "<leader>gh", ":DiffviewFileHistory<CR>", { desc = "Git line history" })
 map("n", "<leader>gH", "<cmd>DiffviewFileHistory<CR>", { desc = "Git repo history" })
-map("n", "<leader>gv", "<cmd>DiffviewOpen<CR>", { desc = "Git diff working tree" })
+-- Every changed file, like `git diff` + `git diff --staged`, starting on the
+-- current buffer's file when it is among them (diffview ignores
+-- --selected-file otherwise). Pressed again inside the diff tab, closes it.
+map("n", "<leader>gD", function()
+  if require("diffview.lib").get_current_view() then
+    vim.cmd "DiffviewClose"
+    return
+  end
+
+  local name = vim.api.nvim_buf_get_name(0)
+
+  if vim.bo.buftype == "" and name ~= "" then
+    vim.cmd("DiffviewOpen --selected-file=" .. vim.fn.fnameescape(name))
+  else
+    vim.cmd "DiffviewOpen"
+  end
+end, { desc = "Git diff working tree (toggle)" })
 map("n", "<leader>gV", function()
   vim.ui.input({ prompt = "Compare against (e.g. master...HEAD): " }, function(rev)
     if rev and rev ~= "" then

@@ -37,7 +37,7 @@ end
 
 -- every server we ship is configured AND enabled
 local expected_servers =
-  { "angularls", "basedpyright", "clangd", "cssls", "html", "omnisharp", "pylsp", "solargraph", "ts_ls" }
+  { "angularls", "basedpyright", "clangd", "cssls", "html", "omnisharp", "solargraph", "ts_ls", "ty" }
 
 for _, name in ipairs(expected_servers) do
   check((vim.lsp._enabled_configs or {})[name] ~= nil, "server not enabled: " .. name)
@@ -80,32 +80,25 @@ check(conform.lua and conform.lua[1] == "stylua", "conform lost the lua formatte
 -- back to: <leader>fm simply did nothing, silently.
 check(conform.python and #conform.python > 0, "conform has no python formatter, so <leader>fm is a no-op there")
 
--- Treesitter's opts actually reached the plugin. NvChad's spec pins no branch,
--- so lazy clones nvim-treesitter's default branch - `master`, not the `main`
--- rewrite NvChad's own :TSInstallAll assumes. On master the module-level
--- setup() takes NO arguments, so lazy's default `require(main).setup(opts)`
--- silently discarded ensure_installed: 11 of 22 declared parsers were never
--- installed and Python, Rust, Ruby, C# and YAML fell back to regex
--- highlighting with no error raised anywhere.
+-- Treesitter's parser list actually reaches an installer. On nvim-treesitter's
+-- `main` branch nothing reads ensure_installed except NvChad's :TSInstallAll
+-- (also the plugin's build step), and that reads the spec's opts only when they
+-- are a table. The archived `master` branch silently discarded the list
+-- instead and broke on Nvim 0.12, so pin that down too.
 --
--- This compares the spec against what configs actually holds. Asserting the
--- parsers are *compiled* would put the network and a C toolchain in the gate.
+-- Asserting the parsers are *compiled* would put the network and a C toolchain
+-- in the gate.
+local ts_opts = lz.plugins["nvim-treesitter"].opts
 local ts_spec = require("lazy.core.plugin").values(lz.plugins["nvim-treesitter"], "opts", false)
-local ts_registered = {}
 
-for _, lang in ipairs(require("nvim-treesitter.configs").get_ensure_installed_parsers()) do
-  ts_registered[lang] = true
-end
-
-local ts_dropped = {}
-
-for _, lang in ipairs(ts_spec.ensure_installed or {}) do
-  if not ts_registered[lang] then
-    ts_dropped[#ts_dropped + 1] = lang
-  end
-end
-
-check(#ts_dropped == 0, "nvim-treesitter never received these parsers from the spec: " .. table.concat(ts_dropped, " "))
+check(
+  type(require("nvim-treesitter").install) == "function",
+  "nvim-treesitter is not on the main branch (no install()), so :TSInstallAll cannot run"
+)
+check(
+  type(ts_opts) == "table" and vim.deep_equal(ts_opts.ensure_installed, ts_spec.ensure_installed),
+  ":TSInstallAll only reads a table opts, so it would install nothing from ensure_installed"
+)
 
 -- mason derives the packages that used to be missing from ensure_installed
 local pkgs = require("nvchad.mason").get_pkgs()

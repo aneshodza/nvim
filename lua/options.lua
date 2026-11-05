@@ -2,8 +2,6 @@ require "nvchad.options"
 
 local o = vim.o
 
--- nvchad.options sets mouse = "a"; this overrides it back off
-o.mouse = ""
 o.guicursor = ""
 
 -- nvchad.options does not set relativenumber

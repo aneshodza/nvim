@@ -16,12 +16,14 @@ local lib = dofile(config_dir .. "/scripts/lib.lua")
 local SPECS = {
   python = {
     file = "main.py",
-    -- basedpyright types and pylsp supplies rope's auto-import index
-    clients = { "basedpyright", "pylsp" },
+    -- basedpyright types and ty supplies auto-imports
+    clients = { "basedpyright", "ty" },
     cursor = { 1, 10 },
     diagnostic = "defaultdict",
-    -- stdlib on purpose: no venv or third-party package needed in CI
-    action = "^from collections import defaultdict",
+    -- stdlib on purpose: no venv or third-party package needed in CI. ty's
+    -- title, not basedpyright's "from collections import ...", so this proves
+    -- the relabelled diagnostic in utils.lsp still reaches ty.
+    action = "^import collections%.defaultdict",
   },
 
   typescript = {
@@ -183,19 +185,16 @@ for _, client in ipairs(vim.lsp.get_clients { bufnr = bufnr }) do
 
   local params = vim.lsp.util.make_range_params(0, client.offset_encoding)
 
-  -- Mirrors utils.lsp.code_action: rope only matches flake8/mypy-shaped
-  -- diagnostics, so basedpyright's code is relabelled for the request.
+  -- Mirrors utils.lsp.code_action: ty only offers imports for its own
+  -- unresolved-reference, so basedpyright's code is relabelled for the request.
   local lsp_diagnostics = {}
 
   for _, d in ipairs(vim.diagnostic.get(bufnr, { lnum = spec.cursor[1] - 1 })) do
     local ld = d.user_data and d.user_data.lsp
 
     if ld then
-      if ld.code == "reportUndefinedVariable" then
-        ld = vim.tbl_extend("force", ld, { code = "name-defined" })
-      end
-
       table.insert(lsp_diagnostics, ld)
+      table.insert(lsp_diagnostics, require("utils.lsp").as_ty_diagnostic(ld))
     end
   end
 

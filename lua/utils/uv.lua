@@ -232,8 +232,8 @@ function M.env()
     add("", bp_path == venv_python and "matches the venv" or "DOES NOT match the venv")
   end
 
-  local py = vim.lsp.get_clients({ name = "pylsp", bufnr = 0 })[1]
-  add("pylsp", py and "attached" or "not attached")
+  local ty = vim.lsp.get_clients({ name = "ty", bufnr = 0 })[1]
+  add("ty", ty and "attached" or "not attached")
 
   if bp then
     add("lsp root", tostring(bp.root_dir))

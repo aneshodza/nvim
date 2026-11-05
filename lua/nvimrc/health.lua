@@ -9,7 +9,6 @@ local start = vim.health.start
 local ok = vim.health.ok
 local warn = vim.health.warn
 local error = vim.health.error
-local info = vim.health.info
 
 --- Tools that are not mason packages and have to be installed by hand.
 local external = {
@@ -64,26 +63,10 @@ local function check_mason()
   end
 end
 
-local function check_pyvenv()
-  start "pylsp rope auto-import"
-
-  local pyvenv = require "utils.pyvenv"
-  local state = pyvenv.ensure()
-
-  if state == "missing" then
-    info("python-lsp-server not installed; nothing to check (" .. pyvenv.cfg_path() .. ")")
-  elseif state == "fixed" then
-    warn "pyvenv.cfg had include-system-site-packages = true and was reset to false"
-    info "Mason rebuilds that venv with --system-site-packages, which makes rope index the global python"
-  else
-    ok "include-system-site-packages = false"
-  end
-end
-
 local function check_python_lsp_pair()
   start "python servers"
 
-  for _, name in ipairs { "basedpyright", "pylsp" } do
+  for _, name in ipairs { "basedpyright", "ty" } do
     if (vim.lsp._enabled_configs or {})[name] then
       ok(name .. " enabled")
     else
@@ -95,7 +78,6 @@ end
 function M.check()
   check_external()
   check_mason()
-  check_pyvenv()
   check_python_lsp_pair()
 end
 

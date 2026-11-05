@@ -62,7 +62,8 @@ for _, mod in ipairs {
   "configs.lazy",
   "utils.quickfix",
   "utils.lsp",
-  "utils.pyvenv",
+  "utils.python",
+  "utils.imports",
   "utils.folders",
   "nvimrc.health",
 } do
@@ -97,17 +98,7 @@ for key, value in pairs(vim.fn.environ()) do
   check(env_before[key] == value, "a server spec mutated the environment at load time: " .. key)
 end
 
--- 5. the pyvenv self-heal is correct and idempotent -------------------------
-local tmp = vim.fn.tempname()
-vim.fn.writefile({ "home = /x", "include-system-site-packages = true" }, tmp)
-
-local pyvenv = require "utils.pyvenv"
-check(pyvenv.ensure(tmp) == "fixed", "pyvenv.ensure should report 'fixed' on a true value")
-check(pyvenv.ensure(tmp) == "ok", "pyvenv.ensure should be idempotent")
-check(vim.fn.readfile(tmp)[2] == "include-system-site-packages = false", "pyvenv rewrote the wrong thing")
-vim.fn.delete(tmp)
-
--- 6. startup-time thresholds pick the right highlight ------------------------
+-- 5. startup-time thresholds pick the right highlight ------------------------
 local startup = require "utils.startup"
 
 for _, case in ipairs {

@@ -6,7 +6,21 @@ local opts = require "nvchad.configs.cmp"
 
 opts.sources = {
   { name = "copilot" },
-  { name = "nvim_lsp" },
+  {
+    name = "nvim_lsp",
+    -- ty only contributes auto-imports (configs/servers/ty.lua); the rest of
+    -- its list duplicates basedpyright's. Its import items carry the import
+    -- edit inline, which is what marks them.
+    entry_filter = function(entry)
+      local client = entry.source.source.client
+
+      if client and client.name == "ty" then
+        return entry.completion_item.additionalTextEdits ~= nil
+      end
+
+      return true
+    end,
+  },
   { name = "luasnip" },
   { name = "buffer" },
   { name = "nvim_lua" },

@@ -92,6 +92,7 @@ end, { desc = "Toggle format on save" })
 
 map("n", "<leader>de", require("utils.quickfix").dotnet_build, { desc = "Quickfix dotnet build errors" })
 map("n", "<leader>gc", require("utils.quickfix").git_conflicts, { desc = "Quickfix git conflict markers" })
+map("n", "<leader>gI", require("utils.imports").goto_import, { desc = "Go to import of word under cursor" })
 
 -- terminals -----------------------------------------------------------------
 -- <A-i>/<A-h>/<A-v> toggles come from NvChad. These open *new* terminals, and

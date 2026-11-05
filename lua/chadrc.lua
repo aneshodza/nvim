@@ -7,15 +7,15 @@
 return {
   -- NvChad derives most packages from the enabled LSP configs and conform
   -- formatters, so angular-language-server, omnisharp, csharpier, basedpyright,
-  -- python-lsp-server, clangd, prettier and friends come for free.
+  -- clangd, prettier and friends come for free.
   mason = {
     -- Not derivable: eslint_d comes in through null-ls, stylua only through
     -- conform, and rust-analyzer is driven by rustaceanvim rather than by a
     -- server spec in configs/servers.
     -- ruff is listed explicitly because NvChad's name map has no entry for
     -- conform's ruff_format / ruff_organize_imports, so it cannot derive it.
-    -- starpls is missing from the same name map.
-    pkgs = { "eslint_d", "ruff", "rust-analyzer", "starpls", "stylua" },
+    -- starpls and ty are missing from the same name map.
+    pkgs = { "eslint_d", "ruff", "rust-analyzer", "starpls", "stylua", "ty" },
     -- solargraph: a ruby gem, not a mason package (gem install solargraph).
     -- buildifier: comes from the project's mise; mason's bin dir is first on
     -- PATH, so a mason copy would shadow the version pre-commit pins.

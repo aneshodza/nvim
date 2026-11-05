@@ -43,7 +43,7 @@ jobs:
           ln -s "$GITHUB_WORKSPACE" "$HOME/.config/nvim"
 
       # Pure-Lua gate: parses every file, enforces the structural invariants and
-      # unit-tests utils.pyvenv. Needs no plugins, so it fails in ~2s rather
+      # loads the pure utils modules. Needs no plugins, so it fails in ~2s rather
       # than after a full install.
       - name: Load check
         run: nvim --headless -l scripts/checkload.lua
@@ -115,7 +115,7 @@ jobs:
           case "${{ matrix.lang }}" in
             python)
               pipx install basedpyright
-              pipx install "python-lsp-server[rope]"
+              pipx install ty
               ;;
             typescript)
               npm install -g typescript-language-server

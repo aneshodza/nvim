@@ -31,6 +31,27 @@ vim.api.nvim_create_autocmd("LspAttach", {
       if client.name == "ruff" then
         client.server_capabilities.hoverProvider = false
       end
+
+      -- ty is only here for auto-imports (see configs/servers/ty.lua); its
+      -- hover, navigation, inlay hints and semantic tokens would all duplicate
+      -- basedpyright's. Safe to do here: vim.lsp enables per-capability
+      -- features in a vim.schedule after LspAttach.
+      if client.name == "ty" then
+        local keep = {
+          positionEncoding = true,
+          textDocumentSync = true,
+          workspace = true,
+          completionProvider = true,
+          codeActionProvider = true,
+          executeCommandProvider = true,
+        }
+
+        for key in pairs(client.server_capabilities) do
+          if not keep[key] then
+            client.server_capabilities[key] = nil
+          end
+        end
+      end
     end
   end,
 })

@@ -22,6 +22,17 @@ autocmd("FileType", {
   end,
 })
 
+-- gf on a path printed in a terminal (e.g. Claude Code's "Write(path)") opens
+-- it here instead of handing it to the OS
+autocmd("TermOpen", {
+  callback = function(args)
+    vim.keymap.set("n", "gf", require("utils.terminal").open_path, {
+      buffer = args.buf,
+      desc = "Open path under cursor in the previous window",
+    })
+  end,
+})
+
 new_cmd("DuplicateKeybinds", function()
   require("utils.keymaps").report()
 end, { desc = "List colliding keybinds for this buffer" })

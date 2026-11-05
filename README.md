@@ -52,9 +52,9 @@ configures and enables gopls, and that is the whole mechanism. The files have to
 no `on_attach` or `capabilities`, because `vim.lsp.config` merges name-level config over
 nvim-lspconfig's own and would silently throw away its defaults. CI checks this.
 
-Python runs two servers. Basedpyright does types and navigation. Pylsp is there only for rope's
-auto-import index, which covers every package in the venv rather than only the ones something has
-already imported. Every other pylsp plugin is switched off.
+Python runs two servers. Basedpyright does types and navigation. ty is there only for auto-imports,
+because its index covers every package in the venv rather than only the ones something has already
+imported. Its diagnostics are off and every other capability is stripped on attach.
 
 `<leader>uv` is a small uv toolset: `d` for the dependencies declared in this project and the
 workspace root, `p` for which interpreter everything resolved to, `y` to sync and restart the

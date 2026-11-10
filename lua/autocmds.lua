@@ -33,6 +33,15 @@ autocmd("TermOpen", {
   end,
 })
 
+autocmd("BufFilePost", {
+  pattern = "diffview://*/:0:/*",
+  callback = function(args)
+    if vim.bo[args.buf].buftype == "" then
+      vim.bo[args.buf].buftype = "acwrite"
+    end
+  end,
+})
+
 new_cmd("DuplicateKeybinds", function()
   require("utils.keymaps").report()
 end, { desc = "List colliding keybinds for this buffer" })

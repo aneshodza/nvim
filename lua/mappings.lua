@@ -101,6 +101,16 @@ map("n", "<leader>ts", function()
   require("nvchad.term").new { pos = "sp" }
 end, { desc = "Terminal new horizontal" })
 
+local claude = "claude --allow-dangerously-skip-permissions"
+
+map("n", "<leader>cc", function()
+  require("nvchad.term").new { pos = "vsp", size = 1 / 3, cmd = claude }
+end, { desc = "Claude Code in a vertical split" })
+
+map("n", "<leader>cr", function()
+  require("nvchad.term").new { pos = "vsp", size = 1 / 3, cmd = claude .. " --resume" }
+end, { desc = "Claude Code resume in a vertical split" })
+
 map("n", "<leader>tv", function()
   require("nvchad.term").new { pos = "vsp" }
 end, { desc = "Terminal new vertical" })

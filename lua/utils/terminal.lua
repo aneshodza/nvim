@@ -115,4 +115,63 @@ function M.open_path()
   end
 end
 
+local function runs_claude(pid, depth)
+  local proc = vim.api.nvim_get_proc(pid)
+
+  if proc and proc.name == "claude" then
+    return true
+  end
+
+  if depth == 0 then
+    return false
+  end
+
+  for _, child in ipairs(vim.api.nvim_get_proc_children(pid)) do
+    if runs_claude(child, depth - 1) then
+      return true
+    end
+  end
+
+  return false
+end
+
+function M.latest_claude_buf()
+  local best
+
+  for _, info in ipairs(vim.fn.getbufinfo()) do
+    local pid = vim.b[info.bufnr].terminal_job_pid
+
+    if pid and (not best or info.lastused > best.lastused) and runs_claude(pid, 2) then
+      best = info
+    end
+  end
+
+  return best and best.bufnr
+end
+
+function M.show_claude_split()
+  local buf = M.latest_claude_buf()
+
+  if not buf then
+    return
+  end
+
+  local prev = vim.api.nvim_get_current_win()
+  local shown = vim.fn.win_findbuf(buf)[1]
+  local width = shown and vim.api.nvim_win_get_width(shown) or math.floor(vim.o.columns / 3)
+
+  vim.cmd "botright vsplit"
+
+  local win = vim.api.nvim_get_current_win()
+  vim.api.nvim_win_set_buf(win, buf)
+  vim.api.nvim_win_set_width(win, width)
+
+  vim.wo[win].winfixwidth = true
+  vim.wo[win].number = false
+  vim.wo[win].relativenumber = false
+  vim.wo[win].signcolumn = "no"
+
+  vim.api.nvim_set_current_win(prev)
+end
+
 return M

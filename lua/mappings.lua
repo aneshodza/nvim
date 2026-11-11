@@ -181,6 +181,8 @@ map("n", "<leader>gD", function()
   else
     vim.cmd "DiffviewOpen"
   end
+
+  require("utils.terminal").show_claude_split()
 end, { desc = "Git diff working tree (toggle)" })
 map("n", "<leader>gV", function()
   vim.ui.input({ prompt = "Compare against (e.g. master...HEAD): " }, function(rev)

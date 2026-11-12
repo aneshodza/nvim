@@ -174,4 +174,11 @@ function M.show_claude_split()
   vim.api.nvim_set_current_win(prev)
 end
 
+function M.git_diff(args)
+  vim.schedule(function()
+    vim.cmd("DiffviewOpen " .. table.concat(vim.tbl_map(vim.fn.fnameescape, args), " "))
+    M.show_claude_split()
+  end)
+end
+
 return M

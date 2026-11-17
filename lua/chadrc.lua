@@ -1,10 +1,16 @@
 -- Only the deltas against NvChad's defaults, which live in the ui plugin's
--- lua/nvconfig.lua. Anything that matched the default (theme, theme_toggle,
+-- lua/nvconfig.lua. Anything that matched the default (theme_toggle,
 -- transparency, cmp style, telescope style, statusline, tabufline, cheatsheet,
 -- lsp.signature) is deliberately omitted rather than restated.
 
 ---@type ChadrcConfig
 return {
+  -- Restated although it is the default: the theme picker and theme toggle
+  -- read base46.theme from this file and rewrite it in place.
+  base46 = {
+    theme = "onedark",
+  },
+
   -- NvChad derives most packages from the enabled LSP configs and conform
   -- formatters, so angular-language-server, omnisharp, csharpier, basedpyright,
   -- clangd, prettier and friends come for free.

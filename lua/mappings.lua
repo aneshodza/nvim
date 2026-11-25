@@ -192,6 +192,14 @@ map("n", "<leader>gV", function()
   end)
 end, { desc = "Git diff against revision" })
 
+map("n", "<leader>oo", "<cmd>Octo actions<CR>", { desc = "Octo actions" })
+map("n", "<leader>ol", "<cmd>Octo pr list<CR>", { desc = "Octo list PRs" })
+map("n", "<leader>oc", "<cmd>Octo pr checkout<CR>", { desc = "Octo checkout PR" })
+map("n", "<leader>or", "<cmd>Octo review start<CR>", { desc = "Octo start review" })
+map("n", "<leader>oR", "<cmd>Octo review resume<CR>", { desc = "Octo resume review" })
+map("n", "<leader>os", "<cmd>Octo review submit<CR>", { desc = "Octo submit review" })
+map("n", "<leader>ox", "<cmd>Octo review discard<CR>", { desc = "Octo discard review" })
+
 -- uv ------------------------------------------------------------------------
 -- Required lazily, so a session that never touches a uv project never loads it.
 for _, entry in ipairs {

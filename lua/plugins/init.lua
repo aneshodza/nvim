@@ -125,6 +125,17 @@ return {
   },
 
   {
+    "folke/which-key.nvim",
+    opts = {
+      icons = {
+        rules = {
+          { pattern = "^octo", icon = " ", color = "purple" },
+        },
+      },
+    },
+  },
+
+  {
     -- GitLens' history and compare views: file/line history, branch diffs and
     -- a three-way merge view for conflicts
     "sindrets/diffview.nvim",
@@ -157,6 +168,36 @@ return {
   },
 
   -------------------------------------------------- extras
+  {
+    "pwntester/octo.nvim",
+    cmd = "Octo",
+    dependencies = { "nvim-lua/plenary.nvim", "nvim-telescope/telescope.nvim" },
+    opts = function()
+      local files = {
+        select_next_entry = { lhs = "<Tab>", desc = "move to next changed file" },
+        select_prev_entry = { lhs = "<S-Tab>", desc = "move to previous changed file" },
+      }
+
+      return {
+        gh_cmd = require("utils.mise").which "gh" or "gh",
+        picker = "telescope",
+        default_remote = { "upstream", "origin" },
+        use_local_fs = true,
+        mappings = {
+          review_diff = vim.tbl_extend("force", files, {
+            add_review_comment = { lhs = "<leader>oa", desc = "Octo add review comment", mode = { "n", "x" } },
+            add_review_suggestion = { lhs = "<leader>oA", desc = "Octo add review suggestion", mode = { "n", "x" } },
+            toggle_viewed = { lhs = "<leader>ov", desc = "Octo toggle file viewed" },
+          }),
+          file_panel = vim.tbl_extend("force", files, {
+            toggle_viewed = { lhs = "<leader>ov", desc = "Octo toggle file viewed" },
+          }),
+          review_thread = files,
+        },
+      }
+    end,
+  },
+
   {
     "mrcjkb/rustaceanvim",
     version = "^5",

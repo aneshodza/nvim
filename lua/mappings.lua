@@ -199,6 +199,12 @@ map("n", "<leader>or", "<cmd>Octo review start<CR>", { desc = "Octo start review
 map("n", "<leader>oR", "<cmd>Octo review resume<CR>", { desc = "Octo resume review" })
 map("n", "<leader>os", "<cmd>Octo review submit<CR>", { desc = "Octo submit review" })
 map("n", "<leader>ox", "<cmd>Octo review discard<CR>", { desc = "Octo discard review" })
+map("n", "<leader>oF", function()
+  require("utils.octo").file_comment()
+end, { desc = "Octo add file comment" })
+map("n", "<leader>of", function()
+  require("utils.octo").find_file()
+end, { desc = "Octo find changed file" })
 
 -- uv ------------------------------------------------------------------------
 -- Required lazily, so a session that never touches a uv project never loads it.

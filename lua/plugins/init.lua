@@ -192,6 +192,96 @@ return {
         },
       }
     end,
+    config = function(_, opts)
+      require("octo").setup(opts)
+
+      local DiffEntry = require("octo.reviews.file-entry").FileEntry
+      local show_diff = DiffEntry.show_diff
+
+      function DiffEntry:show_diff()
+        show_diff(self)
+
+        for _, win in ipairs { self.left_winid, self.right_winid } do
+          if win and vim.api.nvim_win_is_valid(win) then
+            vim.wo[win].foldenable = false
+          end
+        end
+      end
+
+      local reviews = require "octo.reviews"
+      local Layout = require("octo.reviews.layout").Layout
+      local FileEntry = require("octo.reviews.file-entry").FileEntry
+      local healing = false
+
+      local function heal(layout)
+        if healing then
+          return
+        end
+
+        healing = true
+        local ok, err = pcall(function()
+          layout:ensure_layout()
+
+          local file = layout:get_current_file()
+
+          if file then
+            file:load_buffers(layout.left_winid, layout.right_winid)
+          end
+        end)
+        healing = false
+
+        if not ok then
+          vim.notify("octo: " .. tostring(err), vim.log.levels.ERROR)
+        end
+      end
+
+      local octo = require "octo"
+      local update_layout_for_current_file = octo.update_layout_for_current_file
+
+      octo.update_layout_for_current_file = function()
+        if healing or pcall(update_layout_for_current_file) then
+          return
+        end
+
+        vim.schedule(function()
+          local review = reviews.get_current_review()
+
+          if review then
+            heal(review.layout)
+          end
+        end)
+      end
+
+      local recover_layout = Layout.recover_layout
+
+      function Layout:recover_layout(state)
+        if not pcall(recover_layout, self, state) then
+          vim.schedule(function()
+            heal(self)
+          end)
+        end
+      end
+
+      for _, name in ipairs { "get_win", "get_alternative_win" } do
+        local original = FileEntry[name]
+
+        FileEntry[name] = function(self, split)
+          local review = reviews.get_current_review()
+          local stale = not (
+            self.left_winid
+            and self.right_winid
+            and vim.api.nvim_win_is_valid(self.left_winid)
+            and vim.api.nvim_win_is_valid(self.right_winid)
+          )
+
+          if stale and review and review.layout:get_current_file() == self then
+            heal(review.layout)
+          end
+
+          return original(self, split)
+        end
+      end
+    end,
   },
 
   {

@@ -126,13 +126,9 @@ return {
 
   {
     "folke/which-key.nvim",
-    opts = {
-      icons = {
-        rules = {
-          { pattern = "^octo", icon = " ", color = "purple" },
-        },
-      },
-    },
+    opts = function(_, opts)
+      return vim.tbl_deep_extend("force", opts, require "configs.whichkey")
+    end,
   },
 
   {
